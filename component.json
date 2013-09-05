@@ -10,10 +10,9 @@
   },
   "images": [],
   "templates": [],
-  "lib": [
-    "lib/utility.php"
+  "files": [
+    "files/lib/utility.php"
   ],
-  "files": [],
   "styles": [],
   "scripts": [
     "scripts/index.js"
