@@ -1,16 +1,16 @@
 {
-  "name": "ud-lib-utility",
+  "name": "lib-utility",
   "version": "0.0.1",
-  "description": "ud-lib-utility",
-  "homepage": "http://github.com/UsabilityDynamics/ud-lib-utility",
+  "description": "lib-utility",
+  "homepage": "http://github.com/UsabilityDynamics/lib-utility",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/UsabilityDynamics/ud-lib-utility"
+    "url": "https://github.com/UsabilityDynamics/lib-utility"
   },
   "scripts": [
     "scripts/utility.php",
-    "scripts/index.js"
+    "scripts/utility.js"
   ],
   "authors": [
     {
