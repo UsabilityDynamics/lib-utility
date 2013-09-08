@@ -41,11 +41,13 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
-                <li><a href="../classes/UD.Utility.html">UD.Utility</a></li>
+                <li><a href="../classes/Utility.html">Utility</a></li>
             
             </ul>
 
             <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/UsabilityDynamics.html">UsabilityDynamics</a></li>
             
             </ul>
         </div>
@@ -88,16 +90,16 @@
     <pre class="code prettyprint linenums">
 &lt;?php
 /**
- * -
+ * Utility Classs
  *
  * @copyright Copyright (c) 2010 - 2013, Usability Dynamics, Inc.
  *
  * @author team@UD
- * @version 0.0.1
- * @namespace UD
+ * @version 0.2.0
+ * @namespace UsabilityDynamics
+ * @module UsabilityDynamics
  */
-
-namespace UD {
+namespace UsabilityDynamics {
 
   /**
    * UD API Distributable - Common Utility Used in Usability Dynamics, Inc. Products.
@@ -107,6 +109,9 @@ namespace UD {
    * @class Utility
    */
   class Utility {
+
+    // Class Version.
+    public $version = &#x27;0.2.0&#x27;;
 
     /**
      * Default salt for encryption
@@ -135,12 +140,35 @@ namespace UD {
     }
 
     /**
+     * Return array of active plugins for current instance
+     *
+     * Improvement over wp_get_active_and_valid_plugins() which doesn&#x27;t return any plugins when in MS
+     *
+     * @method get_active_plugins
+     * @for Utility
+     *
+     * @since 0.2.0
+     */
+    static function get_active_plugins() {
+      $mu_plugins = (array) wp_get_mu_plugins();
+      $regular_plugins = (array) wp_get_active_and_valid_plugins();
+
+      if ( is_multisite() ) {
+        $network_plugins = (array) wp_get_active_network_plugins();
+      } else {
+        $network_plugins = array();
+      }
+
+      return array_merge( $regular_plugins, $mu_plugins, $network_plugins );
+
+    }
+
+    /**
      * Validate URL
      *
+     * @for Utility
      * @since 1.1.1
-     *
      * @param string $url
-     *
      * @return bool
      */
     static function is_url( $url = &#x27;&#x27; ) {
@@ -759,8 +787,9 @@ namespace UD {
     /**
      * Returns all available image sizes
      *
-     * @source WP-Property
-     * @since 2.0
+     * @method all_image_sizes
+     * @for Utility
+     *
      * @returns array keys: &#x27;width&#x27; and &#x27;height&#x27;
      */
     static function all_image_sizes() {
@@ -2180,7 +2209,7 @@ namespace UD {
      */
     static function encrypt( $pt, $salt = false ) {
 
-      if ( !$salt ) $salt = __CLASS__::default_salt;
+      if ( !$salt ) $salt = self::default_salt;
       $encrypted = base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_256, md5( $salt ), $pt, MCRYPT_MODE_CBC, md5( md5( $salt ) ) ) );
       $encrypted = str_replace( array( &#x27;+&#x27;, &#x27;/&#x27;, &#x27;=&#x27; ), array( &#x27;-&#x27;, &#x27;_&#x27;, &#x27;&#x27; ), $encrypted );
       return $encrypted;
@@ -2201,7 +2230,7 @@ namespace UD {
      */
     static function decrypt( $ct, $salt = false ) {
 
-      if ( !$salt ) $salt = __CLASS__::default_salt;
+      if ( !$salt ) $salt = self::default_salt;
       $data = str_replace( array( &#x27;-&#x27;, &#x27;_&#x27; ), array( &#x27;+&#x27;, &#x27;/&#x27; ), $ct );
       $mod4 = strlen( $data ) % 4;
       if ( $mod4 ) {
@@ -2261,41 +2290,6 @@ namespace UD {
       return $content;
     }
 
-  }
-
-  /**
-   * Adds get_called_class() function if id doesn&#x27;t exist
-   * PHP &lt; 5.3 compatibility
-   *
-   * @see: http://stackoverflow.com/questions/506705/php-get-classname-from-static-call-in-extended-class
-   * @author peshkov@UD
-   */
-  if ( !function_exists( &#x27;get_called_class&#x27; ) ) {
-    class ud_class_tools {
-      static $i = 0;
-      static $fl = null;
-
-      static function get_called_class() {
-        $bt = debug_backtrace();
-
-        if ( self::$fl == $bt[ 2 ][ &#x27;file&#x27; ] . $bt[ 2 ][ &#x27;line&#x27; ] ) {
-          self::$i++;
-        } else {
-          self::$i = 0;
-          self::$fl = $bt[ 2 ][ &#x27;file&#x27; ] . $bt[ 2 ][ &#x27;line&#x27; ];
-        }
-
-        $lines = file( $bt[ 2 ][ &#x27;file&#x27; ] );
-
-        preg_match_all( &#x27;/([a-zA-Z0-9\_]+)::&#x27; . $bt[ 2 ][ &#x27;function&#x27; ] . &#x27;/&#x27;, $lines[ $bt[ 2 ][ &#x27;line&#x27; ] - 1 ], $matches );
-
-        return $matches[ 1 ][ self::$i ];
-      }
-    }
-
-    function get_called_class() {
-      return ud_class_tools::get_called_class();
-    }
   }
 
 }
