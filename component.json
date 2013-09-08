@@ -9,7 +9,7 @@
     "url": "https://github.com/UsabilityDynamics/lib-utility"
   },
   "dependencies": {},
-  "lib": [ "lib/utility.php" ],
+  "lib": [ "libs/utility.php" ],
   "scripts": [ "scripts/utility.js" ],
   "authors": [
     {
