@@ -49,6 +49,8 @@
             
                 <li><a href="../modules/UsabilityDynamics.html">UsabilityDynamics</a></li>
             
+                <li><a href="../modules/Utility.html">Utility</a></li>
+            
             </ul>
         </div>
     </div>
@@ -102,10 +104,10 @@
   namespace UsabilityDynamics {
 
     /**
-     * UD API Distributable - Common Utility Used in Usability Dynamics, Inc. Products.
+     * Utility Library.
      *
-     *
-     * @version 1.1.2
+     * @submodule Utility
+     * @version 0.2.1
      * @class Utility
      */
     class Utility {
@@ -121,18 +123,11 @@
       const default_salt = AUTH_SALT;
 
       /**
-       * (1* 60 *60)
-       *
-       * @property blocking_for_new_validation_interval
-       */
-      const blocking_for_new_validation_interval = 3600;
-
-      /**
        * Constructor for initializing class, in static mode as well as dynamic.
        *
        * @todo Should make the transdomain configuraiton.
        *
-       * @since 1.1.1
+       * @since 0.1.1
        * @author potanin@UD
        */
       public function __construct() {
@@ -167,7 +162,7 @@
        * Validate URL
        *
        * @for Utility
-       * @since 1.1.1
+       * @since 0.1.1
        *
        * @param string $url
        *
@@ -1845,220 +1840,6 @@
        */
       static function de_slug( $string ) {
         return ucwords( str_replace( &quot;_&quot;, &quot; &quot;, $string ) );
-      }
-
-      /**
-       * Returns location information from Google Maps API call.
-       *
-       * From version 1.2.0, the geohash is generated automatically.
-       *
-       * @version 1.2.0
-       * @since 1.0.0
-       *
-       * @param bool   $address
-       * @param string $localization
-       * @param bool   $return_obj_on_fail
-       * @param bool   $latlng
-       *
-       * @return object
-       */
-      static function geo_locate_address( $address = false, $localization = &quot;en&quot;, $return_obj_on_fail = false, $latlng = false ) {
-
-        if ( !$address &amp;&amp; !$latlng ) {
-          return false;
-        }
-
-        if ( is_array( $address ) ) {
-          return false;
-        }
-
-        $address = urlencode( $address );
-
-        $url = str_replace( &#x27; &#x27;, &#x27;+&#x27;, &quot;http://maps.google.com/maps/api/geocode/json?&quot; . ( ( is_array( $latlng ) ) ? &quot;latlng={$latlng[&#x27;lat&#x27;]},{$latlng[&#x27;lng&#x27;]}&quot; : &quot;address={$address}&quot; ) . &quot;&amp;sensor=true&amp;language={$localization}&quot; );
-
-        //** check if we have waited enough time
-        $last_error = get_option( &#x27;ud::geo_locate_address_last_OVER_QUERY_LIMIT&#x27; );
-
-        if ( self::available_address_validation() ) {
-          $obj = ( json_decode( wp_remote_fopen( $url ) ) );
-        } else {
-          $obj          = new stdClass();
-          $obj-&gt;status  = &#x27;OVER_QUERY_LIMIT&#x27;;
-          $obj-&gt;induced = true;
-        }
-
-        if ( $obj-&gt;status != &quot;OK&quot; ) {
-
-          if ( empty( $obj-&gt;induced ) &amp;&amp; $obj-&gt;status == &#x27;OVER_QUERY_LIMIT&#x27; ) {
-            self::available_address_validation( true );
-          }
-
-          // Return Google result if needed instead of just false
-          if ( $return_obj_on_fail ) {
-            return $obj;
-          }
-
-          return false;
-
-        }
-
-        $results        = $obj-&gt;results;
-        $results_object = $results[ 0 ];
-        $geometry       = $results_object-&gt;geometry;
-
-        $return = new stdClass();
-
-        $return-&gt;formatted_address = $results_object-&gt;formatted_address;
-        $return-&gt;latitude          = $geometry-&gt;location-&gt;lat;
-        $return-&gt;longitude         = $geometry-&gt;location-&gt;lng;
-        $return-&gt;location_type     = $geometry-&gt;location_type;
-
-        // Cycle through address component objects picking out the needed elements, if they exist
-        foreach ( (array) $results_object-&gt;address_components as $ac ) {
-
-          // types is returned as an array, look through all of them
-          foreach ( (array) $ac-&gt;types as $type ) {
-            switch ( $type ) {
-
-              case &#x27;street_number&#x27;:
-                $return-&gt;street_number = $ac-&gt;long_name;
-                break;
-
-              case &#x27;route&#x27;:
-                $return-&gt;route = $ac-&gt;long_name;
-                break;
-
-              case &#x27;locality&#x27;:
-                $return-&gt;city = $ac-&gt;long_name;
-                break;
-
-              case &#x27;administrative_area_level_3&#x27;:
-                if ( empty( $return-&gt;city ) )
-                  $return-&gt;city = $ac-&gt;long_name;
-                break;
-
-              case &#x27;administrative_area_level_2&#x27;:
-                $return-&gt;county = $ac-&gt;long_name;
-                break;
-
-              case &#x27;administrative_area_level_1&#x27;:
-                $return-&gt;state      = $ac-&gt;long_name;
-                $return-&gt;state_code = $ac-&gt;short_name;
-                break;
-
-              case &#x27;country&#x27;:
-                $return-&gt;country      = $ac-&gt;long_name;
-                $return-&gt;country_code = $ac-&gt;short_name;
-                break;
-
-              case &#x27;postal_code&#x27;:
-                $return-&gt;postal_code = $ac-&gt;long_name;
-                break;
-
-              case &#x27;sublocality&#x27;:
-                $return-&gt;district = $ac-&gt;long_name;
-                break;
-
-            }
-          }
-        }
-
-        $_table = &quot;0123456789bcdefghjkmnpqrstuvwxyz&quot;;
-
-        $lap               = strlen( $return-&gt;latitude ) - strpos( $return-&gt;latitude, &quot;.&quot; );
-        $lop               = strlen( $return-&gt;longitude ) - strpos( $return-&gt;longitude, &quot;.&quot; );
-        $return-&gt;precision = pow( 10, -max( $lap - 1, $lop - 1, 0 ) ) / 2;
-        $return-&gt;geo_hash  = &quot;&quot;;
-
-        $minlat = -90;
-        $maxlat = 90;
-        $minlng = -180;
-        $maxlng = 180;
-        $latE   = 90;
-        $lngE   = 180;
-        $i      = 0;
-        $error  = 180;
-
-        while ( $error &gt;= $return-&gt;precision ) {
-          $chr = 0;
-          for ( $b = 4; $b &gt;= 0; --$b ) {
-            if ( ( 1 &amp; $b ) == ( 1 &amp; $i ) ) { // even char, even bit OR odd char, odd bit...a lng
-              $next = ( $minlng + $maxlng ) / 2;
-              if ( $lng &gt; $next ) {
-                $chr |= pow( 2, $b );
-                $minlng = $next;
-              } else {
-                $maxlng = $next;
-              }
-              $lngE /= 2;
-            } else { // odd char, even bit OR even char, odd bit...a lat
-              $next = ( $minlat + $maxlat ) / 2;
-              if ( $lat &gt; $next ) {
-                $chr |= pow( 2, $b );
-                $minlat = $next;
-              } else {
-                $maxlat = $next;
-              }
-              $latE /= 2;
-            }
-          }
-          $return-&gt;geo_hash .= $_table[ $chr ];
-          $i++;
-          $error = min( $latE, $lngE );
-        }
-
-        //** API Callback */
-        $return = apply_filters( &#x27;ud::geo_locate_address&#x27;, $return, $results_object, $address, $localization );
-
-        //** API Callback (Legacy) - If no actions have been registered for the new hook, we support the old one. */
-        if ( !has_action( &#x27;ud::geo_locate_address&#x27; ) ) {
-          $return = apply_filters( &#x27;geo_locate_address&#x27;, $return, $results_object, $address, $localization );
-        }
-
-        return $return;
-
-      }
-
-      /**
-       * Returns avaliability of Google&#x27;s Geocoding Service based on time of last returned status OVER_QUERY_LIMIT
-       *
-       * @uses const self::blocking_for_new_validation_interval
-       * @uses option ud::geo_locate_address_last_OVER_QUERY_LIMIT
-       *
-       * @param bool|\UsabilityDynamics\type $update used to set option value in time()
-       *
-       * @return boolean
-       * @author odokienko@UD
-       */
-      static function available_address_validation( $update = false ) {
-        global $wpdb;
-
-        if ( empty( $update ) ) {
-
-          $last_error = (int) get_option( &#x27;ud::geo_locate_address_last_OVER_QUERY_LIMIT&#x27; );
-          if ( !empty( $last_error ) &amp;&amp; ( time() - (int) $last_error ) &lt; 2 ) {
-            sleep( 1 );
-          }
-          /*if (!empty($last_error) &amp;&amp; (((int)$last_error + self::blocking_for_new_validation_interval ) &gt; time()) ){
-            sleep(1);
-            //return false;
-          }else{
-            //** if last success validation was less than a seccond ago we will wait for 1 seccond
-            $last = $wpdb-&gt;get_var(&quot;
-              SELECT if(DATE_ADD(FROM_UNIXTIME(pm.meta_value), INTERVAL 1 SECOND) &lt; NOW(), 0, UNIX_TIMESTAMP()-pm.meta_value) LAST
-              FROM {$wpdb-&gt;postmeta} pm
-              WHERE pm.meta_key=&#x27;last_address_validation&#x27;
-              LIMIT 1
-            &quot;);
-            usleep((int)$last);
-          }*/
-        } else {
-          update_option( &#x27;ud::geo_locate_address_last_OVER_QUERY_LIMIT&#x27;, time() );
-
-          return false;
-        }
-
-        return true;
       }
 
       /**

@@ -4,13 +4,19 @@ YUI.add("yuidoc-meta", function(Y) {
         "Utility"
     ],
     "modules": [
-        "UsabilityDynamics"
+        "UsabilityDynamics",
+        "Utility"
     ],
     "allModules": [
         {
             "displayName": "UsabilityDynamics",
             "name": "UsabilityDynamics",
             "description": "Utility Classs"
+        },
+        {
+            "displayName": "Utility",
+            "name": "Utility",
+            "description": "Utility Library."
         }
     ]
 } };
