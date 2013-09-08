@@ -8,9 +8,7 @@
     "type": "git",
     "url": "https://github.com/UsabilityDynamics/lib-utility"
   },
-  "dependencies": {
-    "justinrainbow/json-schema": "*"
-  },
+  "dependencies": {},
   "lib": [ "lib/utility.php" ],
   "scripts": [ "scripts/utility.js" ],
   "authors": [
