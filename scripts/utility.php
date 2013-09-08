@@ -1,15 +1,15 @@
 <?php
 /**
- * -
+ * Utility Classs
  *
  * @copyright Copyright (c) 2010 - 2013, Usability Dynamics, Inc.
  *
  * @author team@UD
- * @version 0.0.1
- * @namespace UD
+ * @version 0.2.0
+ * @namespace UsabilityDynamics
+ * @module UsabilityDynamics
  */
-
-namespace UD {
+namespace UsabilityDynamics {
 
   /**
    * UD API Distributable - Common Utility Used in Usability Dynamics, Inc. Products.
@@ -19,6 +19,9 @@ namespace UD {
    * @class Utility
    */
   class Utility {
+
+    // Class Version.
+    public $version = '0.2.0';
 
     /**
      * Default salt for encryption
@@ -47,12 +50,35 @@ namespace UD {
     }
 
     /**
+     * Return array of active plugins for current instance
+     *
+     * Improvement over wp_get_active_and_valid_plugins() which doesn't return any plugins when in MS
+     *
+     * @method get_active_plugins
+     * @for Utility
+     *
+     * @since 0.2.0
+     */
+    static function get_active_plugins() {
+      $mu_plugins = (array) wp_get_mu_plugins();
+      $regular_plugins = (array) wp_get_active_and_valid_plugins();
+
+      if ( is_multisite() ) {
+        $network_plugins = (array) wp_get_active_network_plugins();
+      } else {
+        $network_plugins = array();
+      }
+
+      return array_merge( $regular_plugins, $mu_plugins, $network_plugins );
+
+    }
+
+    /**
      * Validate URL
      *
+     * @for Utility
      * @since 1.1.1
-     *
      * @param string $url
-     *
      * @return bool
      */
     static function is_url( $url = '' ) {
@@ -671,8 +697,9 @@ namespace UD {
     /**
      * Returns all available image sizes
      *
-     * @source WP-Property
-     * @since 2.0
+     * @method all_image_sizes
+     * @for Utility
+     *
      * @returns array keys: 'width' and 'height'
      */
     static function all_image_sizes() {
@@ -2092,7 +2119,7 @@ namespace UD {
      */
     static function encrypt( $pt, $salt = false ) {
 
-      if ( !$salt ) $salt = __CLASS__::default_salt;
+      if ( !$salt ) $salt = self::default_salt;
       $encrypted = base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_256, md5( $salt ), $pt, MCRYPT_MODE_CBC, md5( md5( $salt ) ) ) );
       $encrypted = str_replace( array( '+', '/', '=' ), array( '-', '_', '' ), $encrypted );
       return $encrypted;
@@ -2113,7 +2140,7 @@ namespace UD {
      */
     static function decrypt( $ct, $salt = false ) {
 
-      if ( !$salt ) $salt = __CLASS__::default_salt;
+      if ( !$salt ) $salt = self::default_salt;
       $data = str_replace( array( '-', '_' ), array( '+', '/' ), $ct );
       $mod4 = strlen( $data ) % 4;
       if ( $mod4 ) {
@@ -2173,41 +2200,6 @@ namespace UD {
       return $content;
     }
 
-  }
-
-  /**
-   * Adds get_called_class() function if id doesn't exist
-   * PHP < 5.3 compatibility
-   *
-   * @see: http://stackoverflow.com/questions/506705/php-get-classname-from-static-call-in-extended-class
-   * @author peshkov@UD
-   */
-  if ( !function_exists( 'get_called_class' ) ) {
-    class ud_class_tools {
-      static $i = 0;
-      static $fl = null;
-
-      static function get_called_class() {
-        $bt = debug_backtrace();
-
-        if ( self::$fl == $bt[ 2 ][ 'file' ] . $bt[ 2 ][ 'line' ] ) {
-          self::$i++;
-        } else {
-          self::$i = 0;
-          self::$fl = $bt[ 2 ][ 'file' ] . $bt[ 2 ][ 'line' ];
-        }
-
-        $lines = file( $bt[ 2 ][ 'file' ] );
-
-        preg_match_all( '/([a-zA-Z0-9\_]+)::' . $bt[ 2 ][ 'function' ] . '/', $lines[ $bt[ 2 ][ 'line' ] - 1 ], $matches );
-
-        return $matches[ 1 ][ self::$i ];
-      }
-    }
-
-    function get_called_class() {
-      return ud_class_tools::get_called_class();
-    }
   }
 
 }
