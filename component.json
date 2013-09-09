@@ -11,7 +11,11 @@
   "dependencies": {
     "caolan/async": "*"
   },
-  "lib": [
+  "styles": [
+    "styles/responsive.less",
+    "styles/responsive.css"
+  ],
+  "libs": [
     "libs/utility.php"
   ],
   "scripts": [
