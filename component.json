@@ -8,9 +8,15 @@
     "type": "git",
     "url": "https://github.com/UsabilityDynamics/lib-utility"
   },
-  "dependencies": {},
-  "lib": [ "libs/utility.php" ],
-  "scripts": [ "scripts/utility.js" ],
+  "dependencies": {
+    "caolan/async": "*"
+  },
+  "lib": [
+    "libs/utility.php"
+  ],
+  "scripts": [
+    "scripts/utility.js"
+  ],
   "authors": [
     {
       "name": "Andy Potanin",
