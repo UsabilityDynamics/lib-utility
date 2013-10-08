@@ -1,5 +1,5 @@
 {
-  "name": "usabilitydynamics/lib-utility",
+  "name": "usabilitydynamics/utility",
   "keywords": [ "utility" ],
   "type": "library",
   "require": {
