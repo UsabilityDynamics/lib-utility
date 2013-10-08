@@ -1,0 +1,37 @@
+{
+  "name": "usabilitydynamics/lib-utility",
+  "keywords": [ "utility" ],
+  "type": "library",
+  "require": {
+    "justinrainbow/json-schema": "1.1.*"
+  },
+  "autoload": {
+    "UsabilityDynamics": "libs/",
+    "files": [ "libs/utility.php" ]
+  },
+  "homepage": "http://github.com/usabilitydynamics/lib-utility",
+  "authors": [
+    {
+      "name": "Andy Potanin",
+      "email": "andy.potanin@usabilitydynamics.com",
+      "homepage": "http://usabilitydynamics.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Maxim Peshkov",
+      "email": "maxim.peshkov@usabilitydynamics.com",
+      "homepage": "http://usabilitydynamics.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Anton Korotkov",
+      "email": "anton.korotkov@usabilitydynamics.com",
+      "homepage": "http://usabilitydynamics.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/usabilitydynamics/lib-utility/issues"
+  },
+  "license": "MIT"
+}
