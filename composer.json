@@ -1,10 +1,21 @@
 {
-  "name": "usabilitydynamics/utility",
+  "name": "usabilitydynamics/lib-utility",
   "keywords": [ "utility" ],
   "type": "library",
   "require": {
     "justinrainbow/json-schema": "1.1.*"
   },
+  "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/UsabilityDynamics/lib-utility"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/UsabilityDynamics/lib-api"
+    }
+  ],
   "autoload": {
     "UsabilityDynamics": "libs/",
     "files": [ "libs/utility.php" ]
