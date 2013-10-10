@@ -11,6 +11,10 @@
    */
   namespace UsabilityDynamics {
 
+    if( class_exists( '\UsabilityDynamics\Utility' ) ) {
+      return;
+    }
+
     /**
      * Utility Library.
      *
