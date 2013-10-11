@@ -4,11 +4,14 @@
  * @version 0.2.2
  * @returns {Object}
  */
-module.exports = function Utility() {
-  console.log( 'ud.utility' );
+
+define( 'Application', function Utility( require ) {
+  console.log( 'we are in utility' );
 
   return {
-    test: true
+    success: true
   }
 
-}
+});
+
+
