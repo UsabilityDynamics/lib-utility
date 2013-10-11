@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2010 - 2013, Usability Dynamics, Inc.
  *
  * @author team@UD
- * @version 0.2.2
+ * @version 0.2.3
  * @namespace UsabilityDynamics
  * @module UsabilityDynamics
  */
@@ -23,7 +23,7 @@ namespace UsabilityDynamics {
     class Utility {
 
       // Class Version.
-      public static $version = '0.2.2';
+      public static $version = '0.2.3';
 
       /**
        * Default salt for encryption

@@ -1,12 +1,14 @@
 /**
- * UD Utility
+ * UsabilityDynamics Utility
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @returns {Object}
  */
+define( function utility( require, exports, module ) {
 
-define( 'Application', function Utility( require ) {
-  console.log( 'we are in utility' );
+  if( console.debug ) {
+    console.debug( 'UsabilityDynamics.utility module loaded.' );
+  }
 
   return {
     success: true

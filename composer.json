@@ -1,6 +1,6 @@
 {
   "name": "usabilitydynamics/lib-utility",
-  "keywords": [ "utility" ],
+  "keywords": [ "utility", "require.js", "json-schema" ],
   "type": "library",
   "require": {
     "justinrainbow/json-schema": "1.1.*"
@@ -17,7 +17,10 @@
     }
   ],
   "autoload": {
-    "files": [ "lib/utility.php" ]
+    "files": [
+      "lib/utility.php",
+      "lib/loader.php"
+    ]
   },
   "homepage": "http://github.com/usabilitydynamics/lib-utility",
   "authors": [
