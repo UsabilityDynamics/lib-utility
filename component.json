@@ -15,8 +15,8 @@
     "styles/responsive.less",
     "styles/responsive.css"
   ],
-  "libs": [
-    "libs/utility.php"
+  "lib": [
+    "lib/utility.php"
   ],
   "scripts": [
     "scripts/utility.js"
