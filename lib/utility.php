@@ -22,8 +22,23 @@ namespace UsabilityDynamics {
      */
     class Utility {
 
-      // Class Version.
+      /**
+       * Veneer core version.
+       *
+       * @static
+       * @property $version
+       * @type {Object}
+       */
       public static $version = '0.2.3';
+
+      /**
+       * Textdomain String
+       *
+       * @public
+       * @property text_domain
+       * @var string
+       */
+      public static $text_domain = 'veneer';
 
       /**
        * Default salt for encryption
@@ -41,7 +56,6 @@ namespace UsabilityDynamics {
        * @author potanin@UD
        */
       public function __construct() {
-        define( 'UD_Transdomain', 'UD_Transdomain' );
       }
 
       /**
@@ -461,7 +475,7 @@ namespace UsabilityDynamics {
 
           //** We MUST NOT allow to upload not-image files */
           if( !$ext || !in_array( $ext, array( 'gif', 'jpg', 'png', 'bmp', 'jpeg' ) ) ) {
-            $_image[ 'error' ] = new WP_Error( __METHOD__, __( 'Invalid file type.', UD_Transdomain ), $_wp_error_data );
+            $_image[ 'error' ] = new WP_Error( __METHOD__, __( 'Invalid file type.', self::$text_domain ), $_wp_error_data );
           }
 
           //** Set file path */
@@ -470,7 +484,7 @@ namespace UsabilityDynamics {
             if( wp_mkdir_p( $args[ 'upload_dir' ] ) ) {
               $_image[ 'file' ] = trailingslashit( $args[ 'upload_dir' ] ) . wp_unique_filename( $args[ 'upload_dir' ], $filename );
             } else {
-              $_image[ 'error' ] = new WP_Error( __METHOD__, __( 'Could not create mentioned directory.', UD_Transdomain ) );
+              $_image[ 'error' ] = new WP_Error( __METHOD__, __( 'Could not create mentioned directory.', self::$text_domain ) );
             }
 
           } else {
@@ -502,14 +516,14 @@ namespace UsabilityDynamics {
 
               /* Disabled. Was failing multiple images
               if( isset( $wp_remote_request[ 'headers' ][ 'content-length'] ) && $_image[ 'filesize' ] != $wp_remote_request[ 'headers' ][ 'content-length'] ) {
-                $_image[ 'error' ] =  new WP_Error( 'image_fetch', __( 'Remote file has incorrect size', UD_Transdomain ), array(
+                $_image[ 'error' ] =  new WP_Error( 'image_fetch', __( 'Remote file has incorrect size', self::$text_domain ), array(
                   'headers' => $wp_remote_request[ 'headers' ],
                   'image' => $_image
                 ));
               }*/
 
               if( 0 == $_image[ 'filesize' ] ) {
-                $_image[ 'error' ] = new WP_Error( __METHOD__, __( 'Zero size file downloaded', UD_Transdomain ) );
+                $_image[ 'error' ] = new WP_Error( __METHOD__, __( 'Zero size file downloaded', self::$text_domain ) );
               }
 
               $_image = self::extend( $_image, wp_check_filetype( $_image[ 'file' ] ) );
@@ -1049,7 +1063,7 @@ namespace UsabilityDynamics {
 
           $entry = array(
             'time'    => time(),
-            'message' => __( 'Log Started.', UD_Transdomain ),
+            'message' => __( 'Log Started.', self::$text_domain ),
             'user'    => $current_user->ID,
             'type'    => $type
           );
@@ -1572,7 +1586,7 @@ namespace UsabilityDynamics {
           return false;
         }
 
-        add_action( 'admin_menu', create_function( '', "add_menu_page( __( 'Log' ,UD_Transdomain ), __( 'Log', UD_Transdomain ), 10, 'ud_log', array( 'UD_Utility', 'show_log_page' ) );" ) );
+        add_action( 'admin_menu', create_function( '', "add_menu_page( __( 'Log' ,self::$text_domain ), __( 'Log', self::$text_domain ), 10, 'ud_log', array( 'UD_Utility', 'show_log_page' ) );" ) );
 
       }
 
@@ -1596,15 +1610,15 @@ namespace UsabilityDynamics {
         $output[ ] = '<style type="text/css">.ud_event_row b { background:none repeat scroll 0 0 #F6F7DC; padding:2px 6px;}</style>';
 
         $output[ ] = '<div class="wrap">';
-        $output[ ] = '<h2>' . __( 'Log Page for', UD_Transdomain ) . ' ud_log ';
-        $output[ ] = '<a href="' . admin_url( "admin.php?page=ud_log&ud_action=clear_log" ) . '" class="button">' . __( 'Clear Log', UD_Transdomain ) . '</a></h2>';
+        $output[ ] = '<h2>' . __( 'Log Page for', self::$text_domain ) . ' ud_log ';
+        $output[ ] = '<a href="' . admin_url( "admin.php?page=ud_log&ud_action=clear_log" ) . '" class="button">' . __( 'Clear Log', self::$text_domain ) . '</a></h2>';
 
         $output[ ] = '<table class="widefat"><thead><tr>';
-        $output[ ] = '<th style="width: 150px">' . __( 'Timestamp', UD_Transdomain ) . '</th>';
-        $output[ ] = '<th>' . __( 'Type', UD_Transdomain ) . '</th>';
-        $output[ ] = '<th>' . __( 'Event', UD_Transdomain ) . '</th>';
-        $output[ ] = '<th>' . __( 'User', UD_Transdomain ) . '</th>';
-        $output[ ] = '<th>' . __( 'Related Object', UD_Transdomain ) . '</th>';
+        $output[ ] = '<th style="width: 150px">' . __( 'Timestamp', self::$text_domain ) . '</th>';
+        $output[ ] = '<th>' . __( 'Type', self::$text_domain ) . '</th>';
+        $output[ ] = '<th>' . __( 'Event', self::$text_domain ) . '</th>';
+        $output[ ] = '<th>' . __( 'User', self::$text_domain ) . '</th>';
+        $output[ ] = '<th>' . __( 'Related Object', self::$text_domain ) . '</th>';
         $output[ ] = '</tr></thead>';
 
         $output[ ] = '<tbody>';
