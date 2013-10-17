@@ -43,6 +43,14 @@
       "role": "Developer"
     }
   ],
+  "extra": {
+    "component": {
+      "scripts": [
+        "scripts/utility.js",
+        "scripts/require.js"
+      ]
+    }
+  },
   "support": {
     "issues": "https://github.com/usabilitydynamics/lib-utility/issues"
   },
