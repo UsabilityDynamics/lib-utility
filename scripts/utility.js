@@ -4,16 +4,11 @@
  * @version 0.2.3
  * @returns {Object}
  */
-define( function utility( require, exports, module ) {
+function Utility() {
+  console.log( 'UsabilityDynamics.utility module loaded.' );
 
-  if( console.debug ) {
-    console.debug( 'UsabilityDynamics.utility module loaded.' );
-  }
+};
 
-  return {
-    success: true
-  }
+Utility.type = 'component';
 
-});
-
-
+module.exports = Utility;
