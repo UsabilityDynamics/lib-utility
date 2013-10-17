@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2010 - 2013, Usability Dynamics, Inc.
  *
  * @author team@UD
- * @version 0.2.3
+ * @version 0.2.4
  * @namespace UsabilityDynamics
  * @module UsabilityDynamics
  */
@@ -29,7 +29,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type {Object}
        */
-      public static $version = '0.2.3';
+      public static $version = '0.2.4';
 
       /**
        * Textdomain String
@@ -56,6 +56,36 @@ namespace UsabilityDynamics {
        * @author potanin@UD
        */
       public function __construct() {
+      }
+
+      /**
+       * Rename uploaded files as the hash of their original.
+       *
+       * @public
+       * @since 0.2.4
+       * @method hashify_file_name
+       * @for UsabilityDynamics\Utility
+       *
+       * @param string       $filename Original filename to hashify..
+       * @param array|object $args  Configuration arguments.
+       *
+       * @return string
+       * @author sopp@ID
+       */
+      public static function hashify_file_name( $filename = null, $args = array() ) {
+
+        if( !$filename ) {
+          return '';
+        }
+
+        $args = wp_parse_args( $args, array(
+          'limit' => 99
+        ) );
+
+        $info = pathinfo( $filename );
+        $ext  = empty( $info[ 'extension' ] ) ? '' : '.' . $info[ 'extension' ];
+
+        return md5( basename( $filename, $ext ) ) . rand( 0, $args[ 'limit' ] ) . $ext;
       }
 
       /**
@@ -267,7 +297,7 @@ namespace UsabilityDynamics {
        * Detects type.
        *
        * @source http://php.net/manual/en/function.gettype.php
-       * @since 1.0.4
+       * @since 1.0.0.4
        */
       static public function get_type( $var ) {
 
@@ -289,7 +319,7 @@ namespace UsabilityDynamics {
        * @for Utility
        *
        * @version 1.0.1
-       * @since 1.0.3
+       * @since 1.0.0.3
        * @author potanin@UD
        */
       static public function array_filter_deep( $haystack = array() ) {
@@ -317,7 +347,7 @@ namespace UsabilityDynamics {
        *
        * Usage: UD_API::is_fresher_than( $timestamp, '5 minutes' );
        *
-       * @since 1.0.3
+       * @since 1.0.0.3
        */
       static public function fresher_than( $time, $ago = '1 week' ) {
         return ( strtotime( "-" . $ago ) < $time ) ? true : false;
@@ -326,7 +356,7 @@ namespace UsabilityDynamics {
       /**
        * Starts a timer for the passed string.
        *
-       * @since 1.0.2
+       * @since 1.0.0.2
        * @author potanin@UD
        */
       static public function timer_start( $function = 'global' ) {
@@ -338,7 +368,7 @@ namespace UsabilityDynamics {
       /**
        * Stop a timer.
        *
-       * @since 1.0.2
+       * @since 1.0.0.2
        * @author potanin@UD
        */
       static public function timer_stop( $function = 'global', $precision = 2 ) {
@@ -354,7 +384,7 @@ namespace UsabilityDynamics {
        * XHProf is required, other profilers may be added later.
        *
        * @updated 1.0.4
-       * @since 1.0.2
+       * @since 1.0.0.2
        * @author potanin@UD
        */
       static public function profiler_start( $method = false, $args = false ) {
@@ -377,7 +407,7 @@ namespace UsabilityDynamics {
       /**
        * Stop Profiling.
        *
-       * @since 1.0.2
+       * @since 1.0.0.2
        * @author potanin@UD
        */
       static public function profiler_stop( $method = false, $args = false ) {
@@ -612,7 +642,7 @@ namespace UsabilityDynamics {
       /**
        * Converts slashes for Windows paths.
        *
-       * @since 1.0.0
+       * @since 1.0.0.0
        * @source Flawless
        * @author potanin@UD
        */
@@ -835,7 +865,7 @@ namespace UsabilityDynamics {
        * Convert bytes into the logical unit of measure based on size.
        *
        * @source Flawless
-       * @since 1.0.0
+       * @since 1.0.0.0
        * @author potanin@UD
        */
       static public function format_bytes( $bytes, $precision = 2 ) {
@@ -1099,7 +1129,7 @@ namespace UsabilityDynamics {
       /**
        * Helpder function for figuring out if another specific function is a predecesor of current function.
        *
-       * @since 1.0.0
+       * @since 1.0.0.0
        * @author potanin@UD
        */
       static public function _backtrace_function( $function = false ) {
@@ -1115,7 +1145,7 @@ namespace UsabilityDynamics {
       /**
        * Helpder function for figuring out if a specific file is a predecesor of current file.
        *
-       * @since 1.0.0
+       * @since 1.0.0.0
        * @author potanin@UD
        */
       static public function _backtrace_file( $file = false ) {
@@ -1240,7 +1270,7 @@ namespace UsabilityDynamics {
        * @param string $version
        *
        * @return bool
-       * @since 1.0.0
+       * @since 1.0.0.0
        * @author peshkov@UD
        */
       static public function is_older_wp_version( $version = '' ) {
@@ -1453,7 +1483,7 @@ namespace UsabilityDynamics {
       /**
        * Port of jQuery.extend() function.
        *
-       * @since 1.0.3
+       * @since 1.0.0.3
        */
       static public function extend() {
 
@@ -1486,7 +1516,7 @@ namespace UsabilityDynamics {
        *
        * If its a number, then assumes its the id, If it resembles a slug, then get the first slug match.
        *
-       * @since 1.0
+       * @since 1.0.0
        *
        * @param bool|string $title A page title, although ID integer can be passed as well
        *
@@ -1575,7 +1605,7 @@ namespace UsabilityDynamics {
        *
        * @todo Need to make sure this will work if multiple plugins utilize the UD classes
        * @see function show_log_page
-       * @since 1.0
+       * @since 1.0.0
        * @uses add_action() Calls 'admin_menu' hook with an anonymous ( lambda-style ) function which uses add_menu_page to create a UI Log page
        */
       static public function add_log_page() {
@@ -1597,7 +1627,7 @@ namespace UsabilityDynamics {
        * @todo Add nonce to clear_log functions
        * @todo Should be refactored to implement adding LOG tabs for different instances (wpp, wpi, wp-crm). peshkov@UD
        *
-       * @since 1.0.0
+       * @since 1.0.0.0
        */
       static public function show_log_page() {
 
@@ -1723,31 +1753,34 @@ namespace UsabilityDynamics {
       /**
        * Turns a passed string into a URL slug
        *
-       * Argument 'check_existance' will make the function check if the slug is used by a WordPress post
-       *
-       * @param string      $content
+       * @param bool|string $content
        * @param bool|string $args Optional list of arguments to overwrite the defaults.
        *
-       * @since 1.0
-       * @uses add_action() Calls 'admin_menu' hook with an anonymous (lambda-style) function which uses add_menu_page to create a UI Log page
+       * @author potanin@UD
+       * @version 1.1.0
+       * @since 1.0.0
        * @return string
        */
-      static public function create_slug( $content, $args = false ) {
+      static public function create_slug( $content = null, $args = false ) {
 
-        $defaults = array(
-          'separator'       => '-',
-          'check_existance' => false
-        );
+        if( !$content ) {
+          return null;
+        }
 
-        extract( wp_parse_args( $args, $defaults ), EXTR_SKIP );
+        $args = wp_parse_args( $args, array(
+          'separator' => '-'
+        ) );
 
-        $content = preg_replace( '~[^\\pL0-9_]+~u', $separator, $content ); // substitutes anything but letters, numbers and '_' with separator
-        $content = trim( $content, $separator );
+        $content = preg_replace( '~[^\\pL0-9_]+~u', $args[ 'separator' ], $content ); // substitutes anything but letters, numbers and '_' with separator
+        $content = trim( $content, $args[ 'separator' ] );
         $content = iconv( "utf-8", "us-ascii//TRANSLIT", $content ); // TRANSLIT does the whole job
         $content = strtolower( $content );
-        $slug    = preg_replace( '~[^-a-z0-9_]+~', '', $content ); // keep only letters, numbers, '_' and separator
 
-        return $slug;
+        // Removed the following logic because it was removing custom separators such as ":". - potanin@UD | October 17, 2013
+        // return preg_replace( '~[^-a-z0-9_]+~', '', $content ); // keep only letters, numbers, '_' and separator
+
+        return $content;
+
       }
 
       /**

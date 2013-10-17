@@ -1,5 +1,14 @@
-## Notes
-  - justinrainbow/json-schema
+## Summary of Methods
+
+ - hashify_file_name()
+ - can_get_image()
+ - ...
+
+## Changelog
+
+0.2.4
+ - Added Utility::hashify_file_name() method;
+ - Added seperator options to Utility:;create_slug() to support things such as "::"
 
 ## License
 

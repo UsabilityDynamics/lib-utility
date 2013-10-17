@@ -1,6 +1,6 @@
 {
   "name": "utility",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Usability Dynamics general utility classes.",
   "homepage": "http://github.com/UsabilityDynamics/lib-utility",
   "private": false,
