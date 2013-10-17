@@ -1,5 +1,8 @@
 ## Summary of Methods
 
+ - pluralize()
+ - singularize()
+ - ordinalize()
  - hashify_file_name()
  - can_get_image()
  - ...
