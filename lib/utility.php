@@ -59,6 +59,24 @@ namespace UsabilityDynamics {
       }
 
       /**
+       * Fix Serialized (Broken) Array Strings
+       *
+       * @example
+       *
+       *    foreach( $wpdb->get_results( "SELECT meta_id, meta_value from {$wpdb->postmeta} WHERE meta_key = '_cfct_build_data'" ) as $row ) {
+       *        $fixed = \UsabilityDynamics\Utility::repair_serialized_object( $row->meta_value );
+       *        $wpdb->query("UPDATE {$wpdb->postmeta} SET meta_value = {$fixed} WHERE meta_key = {$row->meta_key}");
+       *    }
+       *
+       * @param $input
+       *
+       * @return mixed
+       */
+      function repair_serialized_object( $input ) {
+        return preg_replace('!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $input );
+      }
+
+      /**
        * Rename uploaded files as the hash of their original.
        *
        * @public
