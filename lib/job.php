@@ -5,6 +5,9 @@
  * This is a mixture of traditional UD Utility "log" methods with job handling.
  * Jobs may utilize RaaS support.
  *
+ * Jobs have "job-ready" post_status once ready for processing.
+ * Batches have "job-batch-ready" post_status once ready for processing.
+ *
  * @author team@UD
  * @version 0.2.4
  * @namespace UsabilityDynamics
@@ -34,6 +37,7 @@ namespace UsabilityDynamics {
        */
       public static $defaults = array(
         "type" => '_default',
+        "post_title" => null,
         "post_status" => 'job-ready',
         "post_type" => '_ud_job'
       );
@@ -87,8 +91,11 @@ namespace UsabilityDynamics {
        */
       public function __construct( $settings = array() ) {
 
-        // Save Settings to Instance, applying defaults.
+        // Save Settings to Instance, applying defaults, returns object.
         $this->_settings = self::defaults( $settings, self::$defaults );
+
+        // Generate public job hash.
+        $this->_settings->post_title = md5( uniqid( $this->_settings->type . '-' ) );
 
         // Register Job Post Type, if needed.
         $this->_register_post_type();
@@ -103,7 +110,7 @@ namespace UsabilityDynamics {
 
         // Handle creation error.
         if( $this->_id instanceof WP_Error ) {
-          wp_die( $this->_id );
+          wp_die( $this->_id->get_error_message );
         }
 
         // Register Worker Callback.
@@ -128,8 +135,12 @@ namespace UsabilityDynamics {
        * Load Job
        *
        * @param null $id
+       *
+       * @return object
        */
-      public function load( $id = null ) {}
+      public function load( $id = null ) {
+        return (object) get_post( $id );
+      }
 
       /**
        * Run Job
@@ -173,9 +184,11 @@ namespace UsabilityDynamics {
         // Convert to JSON String.
         $_data = json_encode( $data );
 
+        // Generate public job hash.
         $_batch_id = wp_insert_post( self::defaults( $args, array(
           'post_parent' => $this->_id,
-          'post_status' => 'job-ready',
+          'post_status' => 'job-batch-ready',
+          'post_title' => md5( uniqid( $this->_settings->type . '-' ) ),
           'post_type' => $this->_settings->post_type,
           'post_content' => $_data
         )) );
