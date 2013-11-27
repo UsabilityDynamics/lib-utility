@@ -53,7 +53,7 @@ namespace UsabilityDynamics {
        * @version 0.0.1
        * @since 0.0.1
        */
-      function __construct( object $settings ) {
+      function __construct( $settings = array() ) {
 
 
         // Save Settings to Instance.
