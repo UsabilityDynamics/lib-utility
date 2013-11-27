@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2010 - 2013, Usability Dynamics, Inc.
  *
  * @author team@UD
- * @version 0.2.4
+ * @version 0.2.5
  * @namespace UsabilityDynamics
  * @module Utility
  */
@@ -29,7 +29,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type {Object}
        */
-      public static $version = '0.2.4';
+      public static $version = '0.2.5';
 
       /**
        * Textdomain String
@@ -816,6 +816,67 @@ namespace UsabilityDynamics {
 
         return $return;
 
+      }
+      
+      /**
+       * Returns Image link (url) with custom size.
+       * Almost the same as get_image_link, but the current function can generate images with custom sizes.
+       * It generates image with custom size only once.
+       * 
+       * @global $wpdb
+       * @param type $atts
+       * @return string
+       * @author peshkov@UD
+       * @since 0.2.5
+       */
+      function get_image_link_with_custom_size( $attachment_id, $width, $height ) {
+        global $wpdb;
+        
+        // Sanitize
+        $height = absint( $height );
+        $width = absint( $width );
+        $needs_resize = true;
+
+        // Look through the attachment meta data for an image that fits our size.
+        $meta = wp_get_attachment_metadata( $attachment_id );
+        $upload_dir = wp_upload_dir();
+        $base_url = strtolower( $upload_dir['baseurl'] );
+        $src = trailingslashit( $base_url ) . $meta[ 'file' ];
+        foreach( $meta['sizes'] as $key => $size ) {
+          if ( ( $size['width'] == $width && $size['height'] == $height ) || $key == sprintf( 'resized-%dx%d', $width, $height ) ) {
+            $src = str_replace( basename( $src ), $size['file'], $src );
+            $needs_resize = false;
+            break;
+          }
+        }
+        
+        // If an image of such size was not found, we can create one.
+        if ( $needs_resize ) {
+          $attached_file = get_attached_file( $attachment_id );
+          $resized = image_make_intermediate_size( $attached_file, $width, $height, true );
+          if ( is_wp_error( $resized ) ) {
+            return $resized;
+          }
+          
+          // Let metadata know about our new size.
+          $key = sprintf( 'resized-%dx%d', $width, $height );
+          $meta['sizes'][$key] = $resized;
+          $src = str_replace( basename( $src ), $resized['file'], $src );
+          wp_update_attachment_metadata( $attachment_id, $meta );
+
+          // Record in backup sizes so everything's cleaned up when attachment is deleted.
+          $backup_sizes = get_post_meta( $attachment_id, '_wp_attachment_backup_sizes', true );
+          if ( ! is_array( $backup_sizes ) ) $backup_sizes = array();
+          $backup_sizes[$key] = $resized;
+          update_post_meta( $attachment_id, '_wp_attachment_backup_sizes', $backup_sizes );
+          
+        }
+
+        return array(
+          'url' => esc_url( $src ),
+          'width' => absint( $width ),
+          'height' => absint( $height ),
+        );
       }
 
       /**
