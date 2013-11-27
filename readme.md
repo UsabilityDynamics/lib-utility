@@ -6,6 +6,7 @@
 
 ## Utility Methods
 
+ - defaults()
  - pluralize()
  - singularize()
  - ordinalize()

@@ -59,6 +59,24 @@ namespace UsabilityDynamics {
       }
 
       /**
+       * Port of Lo-dash defaults function.
+       *
+       * Basically switches the order of arguments used by Utility::extend();
+       *
+       * @method defaults
+       *
+       * @param array $data Data to be applied against defaults. $data Data to be applied against defaults.
+       * @param array $defaults Default array|object. $defaults Default array|object.
+       * @return object Extended data wtih defaults.@since 0.2.5
+       */
+      static public function defaults( $data = array(), $defaults = array() ) {
+
+        // Extend and return data object/arary with defaults.
+        return (object) self::extend( (array) $defaults, (array) $data );
+
+      }
+
+      /**
        * Fix Serialized (Broken) Array Strings
        *
        * @example
@@ -337,7 +355,7 @@ namespace UsabilityDynamics {
        * @for Utility
        *
        * @version 1.0.1
-       * @since 1.0.0.3
+       * @since 1.0.3
        * @author potanin@UD
        */
       static public function array_filter_deep( $haystack = array() ) {
@@ -365,7 +383,7 @@ namespace UsabilityDynamics {
        *
        * Usage: UD_API::is_fresher_than( $timestamp, '5 minutes' );
        *
-       * @since 1.0.0.3
+       * @since 1.0.3
        */
       static public function fresher_than( $time, $ago = '1 week' ) {
         return ( strtotime( "-" . $ago ) < $time ) ? true : false;
@@ -1562,7 +1580,7 @@ namespace UsabilityDynamics {
       /**
        * Port of jQuery.extend() function.
        *
-       * @since 1.0.0.3
+       * @since 1.0.3
        */
       static public function extend() {
 

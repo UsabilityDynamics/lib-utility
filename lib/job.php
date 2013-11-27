@@ -55,9 +55,8 @@ namespace UsabilityDynamics {
        */
       function __construct( $settings = array() ) {
 
-
         // Save Settings to Instance.
-        $this->_settings = Utility::extend( $settings );
+        $this->_settings = Utility::defaults( $settings, self::$defaults );
 
 
       }
