@@ -8,12 +8,8 @@
   "minimum-stability": "dev",
   "repositories": [
     {
-      "type": "vcs",
-      "url": "https://github.com/UsabilityDynamics/lib-utility"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/UsabilityDynamics/lib-api"
+      "type": "composer",
+      "url": "http://repository.usabilitydynamics.com"
     }
   ],
   "autoload": {
