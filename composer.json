@@ -19,6 +19,7 @@
   "autoload": {
     "files": [
       "lib/utility.php",
+      "lib/job.php",
       "lib/loader.php"
     ]
   },
