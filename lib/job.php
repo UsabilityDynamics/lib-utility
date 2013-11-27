@@ -47,8 +47,22 @@ namespace UsabilityDynamics {
        */
       private $_id = null;
 
+      /**
+       * Job Status.
+       *
+       * @property $_status
+       * @private
+       * @type {Integer}
+       */
       private $_status = null;
 
+      /**
+       * Job Batches.
+       *
+       * @property $_batches
+       * @private
+       * @type {Array}
+       */
       private $_batches = array();
 
       /**
