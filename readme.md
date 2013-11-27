@@ -1,4 +1,10 @@
-## Summary of Methods
+## Classes
+
+ - Utility: General utility methods.
+ - Job: Job and processing handling.
+ - Loader: PSR class loader.
+
+## Utility Methods
 
  - pluralize()
  - singularize()

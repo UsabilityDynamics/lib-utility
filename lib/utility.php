@@ -7,7 +7,7 @@
  * @author team@UD
  * @version 0.2.4
  * @namespace UsabilityDynamics
- * @module UsabilityDynamics
+ * @module Utility
  */
 namespace UsabilityDynamics {
 

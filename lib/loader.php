@@ -3,7 +3,7 @@
  * PHP Loader
  *
  * @namespace UsabilityDynamics
- * @module Loader
+ * @module Utility
  * @version 0.2.3
  * @author potanin@UD
  */
