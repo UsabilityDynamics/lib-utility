@@ -69,7 +69,7 @@ namespace UsabilityDynamics {
        * @private
        * @type {Integer}
        */
-      private $id = null;
+      public $id = null;
 
       /**
        * Job Status.
@@ -141,7 +141,7 @@ namespace UsabilityDynamics {
         $this->_settings->post_password = uniqid( $this->_settings->type . '-' );
 
         // Encode payload.
-        $this->_settings->post_content = json_encode( $this->_settings->post_content );
+        $this->_settings->post_content = json_encode( (array) $this->_settings->post_content );
 
         // Insert Job, get job ID.
         $this->id = wp_insert_post( $this->_settings );
@@ -248,11 +248,11 @@ namespace UsabilityDynamics {
         // Generate public job hash.
         $_batchid = wp_insert_post( self::defaults( $args, array(
           'post_parent' => $this->id,
-          'post_status' => 'job-batch-ready',
+          'post_status' => 'job-ready',
           'post_title' => sprintf( __( 'Job Batch %s', self::$text_domain ), $this->_settings->type ),
           'post_password' => uniqid( $this->_settings->type . '-' ),
           'post_type' => $this->_settings->post_type,
-          'post_content' => json_encode( $_data )
+          'post_content' => json_encode( (array) $_data )
         )) );
 
         // Add to batch list if not an error.
@@ -263,12 +263,6 @@ namespace UsabilityDynamics {
         return $_batchid;
 
       }
-
-      /**
-       * Complete Job
-       *
-       */
-      public function complete() {}
 
       /**
        * Process Mutiple Jobs.
@@ -284,7 +278,18 @@ namespace UsabilityDynamics {
         $_results = array();
 
         foreach( self::query( $type ) as $_count => $_job ) {
-          $_results[ $_count ] = apply_filters( 'job::' . $_job->type, $_job, $_results[ $_count ] = $_results[ $_count ] || array(), $_count );
+
+          $_batches = self::query( $_job->type, array(
+            "post_parent" => $_job->ID,
+            "post_status" => 'job-ready',
+
+          ));
+
+          //die( '<pre>' . print_r( $_batches, true ) . '</pre>' );
+          // Get Batches
+
+          // $_results[ $_count ] = apply_filters( 'job::' . $_job->type, $_job, $_results[ $_count ] = $_results[ $_count ] || array(), $_count );
+
         }
 
         return $_results;
@@ -292,7 +297,7 @@ namespace UsabilityDynamics {
       }
 
       /**
-       * Get Job Instances
+       * Query Job Instance(s)
        *
        * @todo Should use instances of Job instead of WP_Post.
        *
@@ -304,7 +309,7 @@ namespace UsabilityDynamics {
       public static function query( $type = null, $args = array() ) {
 
         // Build get_posts query.
-        $_query = array(
+        $args = self::defaults( $args, array(
           'posts_per_page'  => 100,
           'offset'          => 0,
           'post_parent'     => 0,
@@ -312,21 +317,21 @@ namespace UsabilityDynamics {
           'order'           => 'DESC',
           'post_type'       => '_ud_job',
           'post_status'     => 'job-ready'
-        );
+        ));
 
         // Query by ID.
-        if( is_integer( $type ) ) {
-          $_query[ 'ID' ] = $type;
+        if( is_numeric( $type ) ) {
+          $args->ID = $type;
         }
 
         // Query by type.
         if( is_string( $type ) ) {
-          $query[ 'meta_key' ]   = 'job::type';
-          $query[ 'meta_value' ] = $type;
+          $args->meta_key   = 'job::type';
+          $args->meta_value = $type;
         }
 
         // Get all top-level jobs.
-        $_jobs = get_posts( $_query );
+        $_jobs = get_posts( (array) $args );
 
         // Extend Job objects with meta.
         foreach( (array) $_jobs as $_count => $_job ) {
