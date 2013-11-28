@@ -243,7 +243,7 @@ namespace UsabilityDynamics {
       public function push( $data = array(), $args = array() ) {
 
         // Convert to JSON String.
-        $_data = json_encode( $data );
+        $_data = json_encode( (array) $data );
 
         // Generate public job hash.
         $_batchid = wp_insert_post( self::defaults( $args, array(
@@ -252,12 +252,12 @@ namespace UsabilityDynamics {
           'post_title' => sprintf( __( 'Job Batch %s', self::$text_domain ), $this->_settings->type ),
           'post_password' => uniqid( $this->_settings->type . '-' ),
           'post_type' => $this->_settings->post_type,
-          'post_content' => json_encode( (array) $_data )
+          'post_content' => $_data
         )) );
 
         // Add to batch list if not an error.
         if( !is_wp_error( $_batchid ) ) {
-          $this->batches[ $_batchid ] = $_data;
+          $this->batches[ $_batchid ] = json_decode( $_data );
         }
 
         return $_batchid;
