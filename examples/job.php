@@ -7,7 +7,7 @@
 include_once( dirname( __DIR__ ) . '/lib/job.php' );
 
 // Instantaite Job.
-$sample_job = new UsabilityDynamics\Job(array(
+$sample_job = new UsabilityDynamics\Job( array(
   "type" => "sample_job"
 ));
 
