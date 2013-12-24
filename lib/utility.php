@@ -743,6 +743,20 @@ namespace UsabilityDynamics {
         return array_filter( (array) $image_sizes );
 
       }
+      
+      /**
+       * Retrieves the attachment ID from the file URL ( guid )
+       * 
+       * @global object $wpdb
+       * @param string $guid
+       * @return string
+       * @author peshkovUD
+       */
+      static public function get_image_id_by_guid( $guid ) {
+        global $wpdb;
+        $attachment = $wpdb->get_col( $wpdb->prepare("SELECT ID FROM {$wpdb->prefix}posts WHERE guid='%s';", $guid ) ); 
+        return !empty( $attachment[0] ) ? $attachment[0] : false; 
+      }
 
       /**
        * Returns Image link (url)
