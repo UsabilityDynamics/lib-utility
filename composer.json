@@ -13,7 +13,7 @@
     }
   ],
   "autoload": {
-    "files": [
+    "classmap": [
       "lib/utility.php",
       "lib/job.php",
       "lib/loader.php"
