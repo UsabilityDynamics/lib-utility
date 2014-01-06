@@ -1470,7 +1470,13 @@ namespace UsabilityDynamics {
        * Migrated from ud_api.php.. - potanin@UD
        *
        * @todo Merge with x_get_template_part() to support $slug and $name, as well as $path.
-       * @name array $name List of requested templates. Will be return the first found
+       *
+       * @param array $name
+       * @param array $path
+       * @param array $opts
+       *
+       * @internal param array $name List of requested templates. Will be return the first found
+       * @return bool|mixed|void
        * @path array $path [optional]. Method tries to find template in theme, but also it can be found in given list of pathes.
        * @author peshkov@UD
        * @version 1.0
