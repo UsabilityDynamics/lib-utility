@@ -152,7 +152,9 @@ namespace UsabilityDynamics {
       }
 
       /**
-       * Detects type.
+       * Detects Variable Type.
+       *
+       * Distinguishes between object and array based on associative status.
        *
        * @source http://php.net/manual/en/function.gettype.php
        * @since 1.0.4
@@ -162,11 +164,37 @@ namespace UsabilityDynamics {
         if( is_object( $var ) ) return get_class( $var );
         if( is_null( $var ) ) return 'null';
         if( is_string( $var ) ) return 'string';
-        if( is_array( $var ) ) return 'array';
+
+        if( is_array( $var ) ) {
+
+          if( self::is_associative( $var ) ) {
+            return 'object';
+          }
+
+          return 'array';
+
+        }
+
         if( is_int( $var ) ) return 'integer';
         if( is_bool( $var ) ) return 'boolean';
         if( is_float( $var ) ) return 'float';
         if( is_resource( $var ) ) return 'resource';
+
+      }
+
+      /**
+       * Test if Array is Associative
+       *
+       * @param $arr
+       * @return bool
+       */
+      function is_associative( $arr ) {
+
+        if( !$arr ) {
+          return false;
+        }
+
+        return array_keys($arr) !== range(0, count($arr) - 1) ? true : false;
 
       }
 
