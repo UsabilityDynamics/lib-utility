@@ -1,6 +1,8 @@
 {
   "name": "usabilitydynamics/lib-utility",
-  "keywords": [ "utility", "require.js", "json-schema" ],
+  "keywords": [
+    "utility"
+  ],
   "type": "library",
   "require": {},
   "minimum-stability": "dev",

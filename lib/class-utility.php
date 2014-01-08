@@ -29,7 +29,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type {Object}
        */
-      public static $version = '0.2.5';
+      public static $version = '0.3.0';
 
       /**
        * Textdomain String
@@ -38,7 +38,7 @@ namespace UsabilityDynamics {
        * @property text_domain
        * @var string
        */
-      public static $text_domain = 'veneer';
+      public static $text_domain = 'lib-utility';
 
       /**
        * Default salt for encryption
@@ -56,6 +56,22 @@ namespace UsabilityDynamics {
        * @author potanin@UD
        */
       public function __construct() {
+      }
+
+      /**
+       * Wrapper for wp_parse_args.
+       *
+       * @author potanin@UD
+       * @since 0.3.0
+       * @param $args
+       * @param $defaults
+       *
+       * @return object
+       */
+      public static function parse_args( $args, $defaults ) {
+
+        return (object) wp_parse_args( $args, $defaults );
+
       }
 
       /**
