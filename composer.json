@@ -2,9 +2,7 @@
   "name": "usabilitydynamics/lib-utility",
   "keywords": [ "utility", "require.js", "json-schema" ],
   "type": "library",
-  "require": {
-    "justinrainbow/json-schema": "1.1.*"
-  },
+  "require": {},
   "minimum-stability": "dev",
   "repositories": [
     {
