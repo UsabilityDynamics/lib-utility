@@ -13,11 +13,7 @@
     }
   ],
   "autoload": {
-    "classmap": [
-      "lib/utility.php",
-      "lib/job.php",
-      "lib/loader.php"
-    ]
+    "classmap": [ "lib" ]
   },
   "homepage": "http://github.com/usabilitydynamics/lib-utility",
   "authors": [

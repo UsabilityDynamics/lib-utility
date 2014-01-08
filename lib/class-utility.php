@@ -59,6 +59,103 @@ namespace UsabilityDynamics {
       }
 
       /**
+       * Parse standard WordPress readme file
+       *
+       * @source Readme Parser ( http://www.tomsdimension.de/wp-plugins/readme-parser )
+       * @author potanin@UD
+       */
+      static function parse_readme( $readme_file = false ) {
+
+        if( !$readme_file ) {
+          $readme_file = untrailingslashit( TEMPLATEPATH ) . '/readme.txt';
+        }
+
+        $file = @file_get_contents( $readme_file );
+
+        if( !$file ) {
+          return false;
+        }
+
+        $file = preg_replace( "/(\n\r|\r\n|\r|\n)/", "\n", $file );
+
+        // headlines
+        $s = array( '===', '==', '=' );
+        $r = array( 'h2', 'h3', 'h4' );
+        for( $x = 0; $x < sizeof( $s ); $x++ ) {
+          $file = preg_replace( '/(.*?)' . $s[ $x ] . '(?!\")(.*?)' . $s[ $x ] . '(.*?)/', '$1<' . $r[ $x ] . '>$2</' . $r[ $x ] . '>$3', $file );
+        }
+
+        // inline
+        $s = array( '\*\*', '\'' );
+        $r = array( 'b', 'code' );
+        for( $x = 0; $x < sizeof( $s ); $x++ ) {
+          $file = preg_replace( '/(.*?)' . $s[ $x ] . '(?!\s)(.*?)(?!\s )' . $s[ $x ] . '(.*?)/', '$1<' . $r[ $x ] . '>$2</' . $r[ $x ] . '>$3', $file );
+        }
+
+        // ' _italic_ '
+        $file = preg_replace( '/(\s)_(\S.*?\S)_(\s|$)/', '<em>$2</em> ', $file );
+
+        // ul lists
+        $s = array( '\*', '\+', '\-' );
+        for( $x = 0; $x < sizeof( $s ); $x++ ) {
+          $file = preg_replace( '/^[ ' . $s[ $x ] . ' ](\s)(.*?)(\n|$)/m', '<li>$2</li>', $file );
+        }
+
+        $file = preg_replace( '/\n<li>(.*?)/', '<ul><li>$1', $file );
+        $file = preg_replace( '/(<\/li>)(?!<li>)/', '$1</ul>', $file );
+
+        // ol lists
+        $file = preg_replace( '/(\d{1,2}\. )\s(.*?)(\n|$)/', '<li>$2</li>', $file );
+        $file = preg_replace( '/\n<li>(.*?)/', '<ol><li>$1', $file );
+        $file = preg_replace( '/(<\/li>)(?!(\<li\>|\<\/ul\> ))/', '$1</ol>', $file );
+
+        // ol screenshots style
+        $file = preg_replace( '/(?=Screenshots)(.*?)<ol>/', '$1<ol class="readme-parser-screenshots">', $file );
+
+        // line breaks
+        $file = preg_replace( '/(.*?)(\n)/', "$1<br/>\n", $file );
+        $file = preg_replace( '/(1|2|3|4)(><br\/>)/', '$1>', $file );
+        $file = str_replace( '</ul><br/>', '</ul>', $file );
+        $file = str_replace( '<br/><br/>', '<br/>', $file );
+
+        // urls
+        $file = str_replace( 'http://www.', 'www.', $file );
+        $file = str_replace( 'www.', 'http://www.', $file );
+        $file = preg_replace( '#(^|[^\"=]{1})(http://|ftp://|mailto:|https://)([^\s<>]+)([\s\n<>]|$)#', '$1<a href="$2$3">$3</a>$4', $file );
+
+        // divs
+        $file = preg_replace( '/(<h3> Description <\/h3>)/', "$1\n<div class=\"readme-description readme-div\">\n", $file );
+        $file = preg_replace( '/(<h3> Installation <\/h3>)/', "</div>\n$1\n<div id=\"readme-installation\" class=\"readme-div\">\n", $file );
+        $file = preg_replace( '/(<h3> Frequently Asked Questions <\/h3>)/', "</div>\n$1\n<div id=\"readme-faq\" class=\"readme-div\">\n", $file );
+        $file = preg_replace( '/(<h3> Screenshots <\/h3>)/', "</div>\n$1\n<div id=\"readme-screenshots\" class=\"readme-div\">\n", $file );
+        $file = preg_replace( '/(<h3> Arbitrary section <\/h3>)/', "</div>\n$1\n<div id=\"readme-arbitrary\" class=\"readme-div\">\n", $file );
+        $file = preg_replace( '/(<h3> Changelog <\/h3>)/', "</div>\n$1\n<div id=\"readme-changelog\" class=\"readme-changelog readme-div\">\n", $file );
+        $file = $file . '</div>';
+
+        return $file;
+
+      }
+
+      /**
+       * Detects type.
+       *
+       * @source http://php.net/manual/en/function.gettype.php
+       * @since 1.0.4
+       */
+      static function get_type( $var ) {
+
+        if( is_object( $var ) ) return get_class( $var );
+        if( is_null( $var ) ) return 'null';
+        if( is_string( $var ) ) return 'string';
+        if( is_array( $var ) ) return 'array';
+        if( is_int( $var ) ) return 'integer';
+        if( is_bool( $var ) ) return 'boolean';
+        if( is_float( $var ) ) return 'float';
+        if( is_resource( $var ) ) return 'resource';
+
+      }
+
+      /**
        * Port of Lo-dash defaults function.
        *
        * Basically switches the order of arguments used by Utility::extend();
@@ -67,6 +164,7 @@ namespace UsabilityDynamics {
        *
        * @param array $data Data to be applied against defaults. $data Data to be applied against defaults.
        * @param array $defaults Default array|object. $defaults Default array|object.
+       *
        * @return object Extended data wtih defaults.@since 0.2.5
        */
       static public function defaults( $data = array(), $defaults = array() ) {
@@ -91,7 +189,7 @@ namespace UsabilityDynamics {
        * @return mixed
        */
       function repair_serialized_object( $input ) {
-        return preg_replace('!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $input );
+        return preg_replace( '!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $input );
       }
 
       /**
@@ -103,7 +201,7 @@ namespace UsabilityDynamics {
        * @for UsabilityDynamics\Utility
        *
        * @param string       $filename Original filename to hashify..
-       * @param array|object $args  Configuration arguments.
+       * @param array|object $args Configuration arguments.
        *
        * @return string
        * @author sopp@ID
@@ -248,103 +346,6 @@ namespace UsabilityDynamics {
         $array = array_filter( $array );
 
         return $array;
-
-      }
-
-      /**
-       * Parse standard WordPress readme file
-       *
-       * @source Readme Parser ( http://www.tomsdimension.de/wp-plugins/readme-parser )
-       * @author potanin@UD
-       */
-      static public function parse_readme( $readme_file = false ) {
-
-        if( !$readme_file ) {
-          $readme_file = untrailingslashit( TEMPLATEPATH ) . '/readme.txt';
-        }
-
-        $file = @file_get_contents( $readme_file );
-
-        if( !$file ) {
-          return false;
-        }
-
-        $file = preg_replace( "/(\n\r|\r\n|\r|\n)/", "\n", $file );
-
-        // headlines
-        $s = array( '===', '==', '=' );
-        $r = array( 'h2', 'h3', 'h4' );
-        for( $x = 0; $x < sizeof( $s ); $x++ ) {
-          $file = preg_replace( '/(.*?)' . $s[ $x ] . '(?!\")(.*?)' . $s[ $x ] . '(.*?)/', '$1<' . $r[ $x ] . '>$2</' . $r[ $x ] . '>$3', $file );
-        }
-
-        // inline
-        $s = array( '\*\*', '\'' );
-        $r = array( 'b', 'code' );
-        for( $x = 0; $x < sizeof( $s ); $x++ ) {
-          $file = preg_replace( '/(.*?)' . $s[ $x ] . '(?!\s)(.*?)(?!\s )' . $s[ $x ] . '(.*?)/', '$1<' . $r[ $x ] . '>$2</' . $r[ $x ] . '>$3', $file );
-        }
-
-        // ' _italic_ '
-        $file = preg_replace( '/(\s)_(\S.*?\S)_(\s|$)/', '<em>$2</em> ', $file );
-
-        // ul lists
-        $s = array( '\*', '\+', '\-' );
-        for( $x = 0; $x < sizeof( $s ); $x++ ) {
-          $file = preg_replace( '/^[ ' . $s[ $x ] . ' ](\s)(.*?)(\n|$)/m', '<li>$2</li>', $file );
-        }
-
-        $file = preg_replace( '/\n<li>(.*?)/', '<ul><li>$1', $file );
-        $file = preg_replace( '/(<\/li>)(?!<li>)/', '$1</ul>', $file );
-
-        // ol lists
-        $file = preg_replace( '/(\d{1,2}\. )\s(.*?)(\n|$)/', '<li>$2</li>', $file );
-        $file = preg_replace( '/\n<li>(.*?)/', '<ol><li>$1', $file );
-        $file = preg_replace( '/(<\/li>)(?!(\<li\>|\<\/ul\> ))/', '$1</ol>', $file );
-
-        // ol screenshots style
-        $file = preg_replace( '/(?=Screenshots)(.*?)<ol>/', '$1<ol class="readme-parser-screenshots">', $file );
-
-        // line breaks
-        $file = preg_replace( '/(.*?)(\n)/', "$1<br/>\n", $file );
-        $file = preg_replace( '/(1|2|3|4)(><br\/>)/', '$1>', $file );
-        $file = str_replace( '</ul><br/>', '</ul>', $file );
-        $file = str_replace( '<br/><br/>', '<br/>', $file );
-
-        // urls
-        $file = str_replace( 'http://www.', 'www.', $file );
-        $file = str_replace( 'www.', 'http://www.', $file );
-        $file = preg_replace( '#(^|[^\"=]{1})(http://|ftp://|mailto:|https://)([^\s<>]+)([\s\n<>]|$)#', '$1<a href="$2$3">$3</a>$4', $file );
-
-        // divs
-        $file = preg_replace( '/(<h3> Description <\/h3>)/', "$1\n<div class=\"readme-description readme-div\">\n", $file );
-        $file = preg_replace( '/(<h3> Installation <\/h3>)/', "</div>\n$1\n<div id=\"readme-installation\" class=\"readme-div\">\n", $file );
-        $file = preg_replace( '/(<h3> Frequently Asked Questions <\/h3>)/', "</div>\n$1\n<div id=\"readme-faq\" class=\"readme-div\">\n", $file );
-        $file = preg_replace( '/(<h3> Screenshots <\/h3>)/', "</div>\n$1\n<div id=\"readme-screenshots\" class=\"readme-div\">\n", $file );
-        $file = preg_replace( '/(<h3> Arbitrary section <\/h3>)/', "</div>\n$1\n<div id=\"readme-arbitrary\" class=\"readme-div\">\n", $file );
-        $file = preg_replace( '/(<h3> Changelog <\/h3>)/', "</div>\n$1\n<div id=\"readme-changelog\" class=\"readme-changelog readme-div\">\n", $file );
-        $file = $file . '</div>';
-
-        return $file;
-
-      }
-
-      /**
-       * Detects type.
-       *
-       * @source http://php.net/manual/en/function.gettype.php
-       * @since 1.0.0.4
-       */
-      static public function get_type( $var ) {
-
-        if( is_object( $var ) ) return get_class( $var );
-        if( is_null( $var ) ) return 'null';
-        if( is_string( $var ) ) return 'string';
-        if( is_array( $var ) ) return 'array';
-        if( is_int( $var ) ) return 'integer';
-        if( is_bool( $var ) ) return 'boolean';
-        if( is_float( $var ) ) return 'float';
-        if( is_resource( $var ) ) return 'resource';
 
       }
 
@@ -743,19 +744,22 @@ namespace UsabilityDynamics {
         return array_filter( (array) $image_sizes );
 
       }
-      
+
       /**
        * Retrieves the attachment ID from the file URL ( guid )
-       * 
+       *
        * @global object $wpdb
-       * @param string $guid
+       *
+       * @param string  $guid
+       *
        * @return string
        * @author peshkovUD
        */
       static public function get_image_id_by_guid( $guid ) {
         global $wpdb;
-        $attachment = $wpdb->get_col( $wpdb->prepare("SELECT ID FROM {$wpdb->prefix}posts WHERE guid='%s';", $guid ) ); 
-        return !empty( $attachment[0] ) ? $attachment[0] : false; 
+        $attachment = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->prefix}posts WHERE guid='%s';", $guid ) );
+
+        return !empty( $attachment[ 0 ] ) ? $attachment[ 0 ] : false;
       }
 
       /**
@@ -849,64 +853,66 @@ namespace UsabilityDynamics {
         return $return;
 
       }
-      
+
       /**
        * Returns Image link (url) with custom size.
        * Almost the same as get_image_link, but the current function can generate images with custom sizes.
        * It generates image with custom size only once.
-       * 
-       * @global $wpdb
+       *
+       * @global     $wpdb
+       *
        * @param type $atts
+       *
        * @return string
        * @author peshkov@UD
        * @since 0.2.5
        */
       function get_image_link_with_custom_size( $attachment_id, $width, $height ) {
         global $wpdb;
-        
+
         // Sanitize
-        $height = absint( $height );
-        $width = absint( $width );
+        $height       = absint( $height );
+        $width        = absint( $width );
         $needs_resize = true;
 
         // Look through the attachment meta data for an image that fits our size.
-        $meta = wp_get_attachment_metadata( $attachment_id );
+        $meta       = wp_get_attachment_metadata( $attachment_id );
         $upload_dir = wp_upload_dir();
-        $base_url = strtolower( $upload_dir['baseurl'] );
-        $src = trailingslashit( $base_url ) . $meta[ 'file' ];
-        foreach( $meta['sizes'] as $key => $size ) {
-          if ( ( $size['width'] == $width && $size['height'] == $height ) || $key == sprintf( 'resized-%dx%d', $width, $height ) ) {
-            $src = str_replace( basename( $src ), $size['file'], $src );
+        $base_url   = strtolower( $upload_dir[ 'baseurl' ] );
+        $src        = trailingslashit( $base_url ) . $meta[ 'file' ];
+        foreach( $meta[ 'sizes' ] as $key => $size ) {
+          if( ( $size[ 'width' ] == $width && $size[ 'height' ] == $height ) || $key == sprintf( 'resized-%dx%d', $width, $height ) ) {
+            $src          = str_replace( basename( $src ), $size[ 'file' ], $src );
             $needs_resize = false;
             break;
           }
         }
-        
+
         // If an image of such size was not found, we can create one.
-        if ( $needs_resize ) {
+        if( $needs_resize ) {
           $attached_file = get_attached_file( $attachment_id );
-          $resized = image_make_intermediate_size( $attached_file, $width, $height, true );
-          if ( is_wp_error( $resized ) ) {
+          $resized       = image_make_intermediate_size( $attached_file, $width, $height, true );
+          if( is_wp_error( $resized ) ) {
             return $resized;
           }
-          
+
           // Let metadata know about our new size.
-          $key = sprintf( 'resized-%dx%d', $width, $height );
-          $meta['sizes'][$key] = $resized;
-          $src = str_replace( basename( $src ), $resized['file'], $src );
+          $key                     = sprintf( 'resized-%dx%d', $width, $height );
+          $meta[ 'sizes' ][ $key ] = $resized;
+          $src                     = str_replace( basename( $src ), $resized[ 'file' ], $src );
           wp_update_attachment_metadata( $attachment_id, $meta );
 
           // Record in backup sizes so everything's cleaned up when attachment is deleted.
           $backup_sizes = get_post_meta( $attachment_id, '_wp_attachment_backup_sizes', true );
-          if ( ! is_array( $backup_sizes ) ) $backup_sizes = array();
-          $backup_sizes[$key] = $resized;
+          if( !is_array( $backup_sizes ) ) $backup_sizes = array();
+          $backup_sizes[ $key ] = $resized;
           update_post_meta( $attachment_id, '_wp_attachment_backup_sizes', $backup_sizes );
-          
+
         }
 
         return array(
-          'url' => esc_url( $src ),
-          'width' => absint( $width ),
+          'url'    => esc_url( $src ),
+          'width'  => absint( $width ),
           'height' => absint( $height ),
         );
       }
@@ -2066,7 +2072,7 @@ namespace UsabilityDynamics {
       /**
        * Returns array of full pathes of files or directories which we try to find.
        *
-       * @param mixed   $needle  Directory(ies) or file(s) which we want to find
+       * @param mixed   $needle Directory(ies) or file(s) which we want to find
        * @param string  $path The path where we try to find it
        * @param boolean $_is_dir We're finding dir or file. Default is file.
        *

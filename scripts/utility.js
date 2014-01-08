@@ -7,7 +7,7 @@
 function Utility() {
   console.log( 'UsabilityDynamics.utility module loaded.' );
 
-};
+}
 
 Utility.type = 'component';
 
