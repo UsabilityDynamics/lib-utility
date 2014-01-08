@@ -55,8 +55,7 @@ namespace UsabilityDynamics {
        * @since 0.1.1
        * @author potanin@UD
        */
-      public function __construct() {
-      }
+      public function __construct() {}
 
       /**
        * Wrapper for wp_parse_args.
