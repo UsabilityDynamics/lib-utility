@@ -77,6 +77,7 @@ module.exports = function build( grunt ) {
         },
         files: {
           'scripts/utility.dev.js': [ 'scripts/src/utility.js' ],
+          'scripts/facebook.like.dev.js': [ 'scripts/src/facebook.like.js' ],
           'scripts/loader.dev.js': [ 'scripts/src/loader.js' ],
           'scripts/job.dev.js': [ 'scripts/src/job.js' ]
         }
@@ -88,6 +89,7 @@ module.exports = function build( grunt ) {
         },
         files: {
           'scripts/utility.js': [ 'scripts/src/utility.js' ],
+          'scripts/facebook.like.js': [ 'scripts/src/facebook.like.js' ],
           'scripts/loader.js': [ 'scripts/src/loader.js' ],
           'scripts/job.js': [ 'scripts/src/job.js' ]
         }

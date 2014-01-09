@@ -74,6 +74,40 @@ namespace UsabilityDynamics {
       }
 
       /**
+       * Deep Conversion
+       *
+       * @updated 2.0
+       * @since 0.1
+       */
+      static function array_to_object( $array = array() ) {
+        return json_decode( json_encode( $array ) );
+      }
+
+      /**
+       * Recursively converts object to array
+       *
+       * @since 2.0
+       * @author peshkov@UD
+       */
+      static function object_to_array( $data ) {
+
+        if ( is_object( $data ) ) {
+          $data = get_object_vars( $data );
+        }
+
+        if ( is_array( $data ) ) {
+          foreach ( $data as $k => $v ) {
+            if ( is_object( $v ) ) {
+              $data[ $k ] = self::object_to_array( $v );
+            }
+          }
+        }
+
+        return $data;
+
+      }
+
+      /**
        * Parse standard WordPress readme file
        *
        * @source Readme Parser ( http://www.tomsdimension.de/wp-plugins/readme-parser )
