@@ -1,0 +1,1 @@
+define("udx.utility.md5",function(a,b,c){return console.log(c.id,"loaded"),function(){"0123456789abcdef".split("")}});

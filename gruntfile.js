@@ -87,12 +87,14 @@ module.exports = function build( grunt ) {
           preserveComments: false,
           wrap: false
         },
-        files: {
-          'scripts/utility.js': [ 'scripts/src/utility.js' ],
-          'scripts/facebook.like.js': [ 'scripts/src/facebook.like.js' ],
-          'scripts/loader.js': [ 'scripts/src/loader.js' ],
-          'scripts/job.js': [ 'scripts/src/job.js' ]
-        }
+        files: [
+          {
+            expand: true,
+            cwd: 'scripts/src',
+            src: [ '*.js' ],
+            dest: 'scripts'
+          }
+        ]
       }
     },
 

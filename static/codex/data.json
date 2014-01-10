@@ -6,64 +6,36 @@
         "url": "http://github.com/usabilitydynamics/lib-utility"
     },
     "files": {
-        "scripts/src/facebook.like.js": {
-            "name": "scripts/src/facebook.like.js",
+        "scripts/src/udx.utility.facebook.like.js": {
+            "name": "scripts/src/udx.utility.facebook.like.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "scripts/src/job.js": {
-            "name": "scripts/src/job.js",
+        "scripts/src/udx.utility.job.js": {
+            "name": "scripts/src/udx.utility.job.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "scripts/src/loader.js": {
-            "name": "scripts/src/loader.js",
+        "scripts/src/udx.utility.js": {
+            "name": "scripts/src/udx.utility.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "scripts/src/md5.js": {
-            "name": "scripts/src/md5.js",
+        "scripts/src/udx.utility.loader.js": {
+            "name": "scripts/src/udx.utility.loader.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "scripts/src/utility.js": {
-            "name": "scripts/src/utility.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "scripts/facebook.like.dev.js": {
-            "name": "scripts/facebook.like.dev.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "scripts/job.dev.js": {
-            "name": "scripts/job.dev.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "scripts/loader.dev.js": {
-            "name": "scripts/loader.dev.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "scripts/utility.dev.js": {
-            "name": "scripts/utility.dev.js",
+        "scripts/src/udx.utility.md5.js": {
+            "name": "scripts/src/udx.utility.md5.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -74,7 +46,7 @@
     "classes": {},
     "classitems": [
         {
-            "file": "scripts/src/facebook.like.js",
+            "file": "scripts/src/udx.utility.facebook.like.js",
             "line": 1,
             "description": "UsabilityDynamics Utility",
             "version": "0.2.3",
@@ -85,7 +57,7 @@
             "class": ""
         },
         {
-            "file": "scripts/src/job.js",
+            "file": "scripts/src/udx.utility.job.js",
             "line": 1,
             "description": "UsabilityDynamics Utility",
             "version": "0.2.3",
@@ -96,7 +68,7 @@
             "class": ""
         },
         {
-            "file": "scripts/src/loader.js",
+            "file": "scripts/src/udx.utility.js",
             "line": 1,
             "description": "UsabilityDynamics Utility",
             "version": "0.2.3",
@@ -107,7 +79,7 @@
             "class": ""
         },
         {
-            "file": "scripts/src/md5.js",
+            "file": "scripts/src/udx.utility.loader.js",
             "line": 1,
             "description": "UsabilityDynamics Utility",
             "version": "0.2.3",
@@ -118,51 +90,7 @@
             "class": ""
         },
         {
-            "file": "scripts/src/utility.js",
-            "line": 1,
-            "description": "UsabilityDynamics Utility",
-            "version": "0.2.3",
-            "return": {
-                "description": "",
-                "type": "Object"
-            },
-            "class": ""
-        },
-        {
-            "file": "scripts/facebook.like.dev.js",
-            "line": 1,
-            "description": "UsabilityDynamics Utility",
-            "version": "0.2.3",
-            "return": {
-                "description": "",
-                "type": "Object"
-            },
-            "class": ""
-        },
-        {
-            "file": "scripts/job.dev.js",
-            "line": 1,
-            "description": "UsabilityDynamics Utility",
-            "version": "0.2.3",
-            "return": {
-                "description": "",
-                "type": "Object"
-            },
-            "class": ""
-        },
-        {
-            "file": "scripts/loader.dev.js",
-            "line": 1,
-            "description": "UsabilityDynamics Utility",
-            "version": "0.2.3",
-            "return": {
-                "description": "",
-                "type": "Object"
-            },
-            "class": ""
-        },
-        {
-            "file": "scripts/utility.dev.js",
+            "file": "scripts/src/udx.utility.md5.js",
             "line": 1,
             "description": "UsabilityDynamics Utility",
             "version": "0.2.3",
@@ -176,111 +104,63 @@
     "warnings": [
         {
             "message": "unknown tag: version",
-            "line": " scripts/src/facebook.like.js:1"
+            "line": " scripts/src/udx.utility.facebook.like.js:1"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " scripts/src/facebook.like.js:1"
+            "line": " scripts/src/udx.utility.facebook.like.js:1"
         },
         {
             "message": "unknown tag: version",
-            "line": " scripts/src/job.js:1"
+            "line": " scripts/src/udx.utility.job.js:1"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " scripts/src/job.js:1"
+            "line": " scripts/src/udx.utility.job.js:1"
         },
         {
             "message": "unknown tag: version",
-            "line": " scripts/src/loader.js:1"
+            "line": " scripts/src/udx.utility.js:1"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " scripts/src/loader.js:1"
+            "line": " scripts/src/udx.utility.js:1"
         },
         {
             "message": "unknown tag: version",
-            "line": " scripts/src/md5.js:1"
+            "line": " scripts/src/udx.utility.loader.js:1"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " scripts/src/md5.js:1"
+            "line": " scripts/src/udx.utility.loader.js:1"
         },
         {
             "message": "unknown tag: version",
-            "line": " scripts/src/utility.js:1"
+            "line": " scripts/src/udx.utility.md5.js:1"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " scripts/src/utility.js:1"
-        },
-        {
-            "message": "unknown tag: version",
-            "line": " scripts/facebook.like.dev.js:1"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " scripts/facebook.like.dev.js:1"
-        },
-        {
-            "message": "unknown tag: version",
-            "line": " scripts/job.dev.js:1"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " scripts/job.dev.js:1"
-        },
-        {
-            "message": "unknown tag: version",
-            "line": " scripts/loader.dev.js:1"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " scripts/loader.dev.js:1"
-        },
-        {
-            "message": "unknown tag: version",
-            "line": " scripts/utility.dev.js:1"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " scripts/utility.dev.js:1"
+            "line": " scripts/src/udx.utility.md5.js:1"
         },
         {
             "message": "Missing item type\nUsabilityDynamics Utility",
-            "line": " scripts/src/facebook.like.js:1"
+            "line": " scripts/src/udx.utility.facebook.like.js:1"
         },
         {
             "message": "Missing item type\nUsabilityDynamics Utility",
-            "line": " scripts/src/job.js:1"
+            "line": " scripts/src/udx.utility.job.js:1"
         },
         {
             "message": "Missing item type\nUsabilityDynamics Utility",
-            "line": " scripts/src/loader.js:1"
+            "line": " scripts/src/udx.utility.js:1"
         },
         {
             "message": "Missing item type\nUsabilityDynamics Utility",
-            "line": " scripts/src/md5.js:1"
+            "line": " scripts/src/udx.utility.loader.js:1"
         },
         {
             "message": "Missing item type\nUsabilityDynamics Utility",
-            "line": " scripts/src/utility.js:1"
-        },
-        {
-            "message": "Missing item type\nUsabilityDynamics Utility",
-            "line": " scripts/facebook.like.dev.js:1"
-        },
-        {
-            "message": "Missing item type\nUsabilityDynamics Utility",
-            "line": " scripts/job.dev.js:1"
-        },
-        {
-            "message": "Missing item type\nUsabilityDynamics Utility",
-            "line": " scripts/loader.dev.js:1"
-        },
-        {
-            "message": "Missing item type\nUsabilityDynamics Utility",
-            "line": " scripts/utility.dev.js:1"
+            "line": " scripts/src/udx.utility.md5.js:1"
         }
     ]
 }
