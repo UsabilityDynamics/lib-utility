@@ -1,11 +1,11 @@
 {
-  "name": "lib-settings",
-  "version": "0.2.0",
-  "description": "Settings Library.",
+  "name": "lib-utility",
+  "version": "0.3.1",
+  "description": "Utility Library.",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/UsabilityDynamics/lib-settings"
+    "url": "https://github.com/UsabilityDynamics/lib-utility"
   },
   "main": "scripts/settings",
   "engines": {

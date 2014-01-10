@@ -29,7 +29,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type {Object}
        */
-      public static $version = '0.3.0';
+      public static $version = '0.3.1';
 
       /**
        * Textdomain String
@@ -56,6 +56,44 @@ namespace UsabilityDynamics {
        * @author potanin@UD
        */
       public function __construct() {}
+
+      /**
+       * Set Dot-Notated Array Value
+       *
+       * @param array $arr
+       * @param       $path
+       * @param       $val
+       *
+       * @return mixed
+       */
+      function _set_val( array &$arr, $path, $val ) {
+        $loc = & $arr;
+
+        foreach( explode( '.', $path ) as $step ) {
+          $loc = & $loc[ $step ];
+        }
+
+        return $loc = $val;
+
+      }
+
+      /**
+       * Convert dot-notated array key->value items to nested object
+       *
+       * @param $items
+       * @return array
+       */
+      function unwrap( $items ) {
+
+        $_result = array();
+
+        foreach( (array) $items as $key => $value ) {
+          self::_set_val( $_result, $key, $value );
+        }
+
+        return (array) $_result;
+
+      }
 
       /**
        * Wrapper for wp_parse_args.
