@@ -7,7 +7,7 @@
 define( 'udx.utility.md5', function( require, exports, module ) {
   console.log( module.id, 'loaded' );
 
-  return function() {
+  return function(s) {
 
     function md5cycle( x, k ) {
       var a = x[0], b = x[1], c = x[2], d = x[3];
@@ -180,6 +180,8 @@ define( 'udx.utility.md5', function( require, exports, module ) {
     function add32( a, b ) {
       return (a + b) & 0xFFFFFFFF;
     }
+
+    return md5(s);
 
   }
 
