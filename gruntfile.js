@@ -75,12 +75,14 @@ module.exports = function build( grunt ) {
           beautify: true,
           wrap: false
         },
-        files: {
-          'scripts/utility.dev.js': [ 'scripts/src/utility.js' ],
-          'scripts/facebook.like.dev.js': [ 'scripts/src/facebook.like.js' ],
-          'scripts/loader.dev.js': [ 'scripts/src/loader.js' ],
-          'scripts/job.dev.js': [ 'scripts/src/job.js' ]
-        }
+        files: [
+          {
+            expand: true,
+            cwd: 'scripts/src',
+            src: [ '*.js' ],
+            dest: 'scripts'
+          }
+        ]
       },
       production: {
         options: {
