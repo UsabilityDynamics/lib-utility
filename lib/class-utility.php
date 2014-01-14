@@ -2233,6 +2233,64 @@ namespace UsabilityDynamics {
 
         return $content;
       }
+      
+      /**
+       * Parses passed directory for widget files
+       * includes and registers widget if they exist
+       * 
+       * @param string $path
+       * @param boolean $cache
+       * @author peshkov@UD
+       */
+      static public function maybe_load_widgets( $path, $cache = true ) {
+        if ( !is_dir( $path ) ) {
+          return null;
+        }
+        
+        $_widgets = wp_cache_get( 'widgets', 'usabilitydynamics' );
+        if( !is_array( $_widgets ) ) {
+          $_widgets = array();
+        }
+        
+        if( $cache && !empty( $_widgets[ $path ] ) && is_array( $_widgets[ $path ] ) ) {
+          foreach( $_widgets[ $path ] as $_widget ) {
+            include_once( $path . "/" . $_widget[ 'file' ] );
+            register_widget( $_widget[ 'headers' ][ 'class' ] );
+          }
+          return null;
+        }
+        
+        $_widgets[ $path ] = array();
+        
+        if ( $dir = @opendir( $path ) ) {
+          $headers = array(
+            'name' => 'Name',
+            'id' => 'ID',
+            'type' => 'Type',
+            'group' => 'Group',
+            'class' => 'Class',
+            'version' => 'Version',
+            'description' => 'Description',
+          );
+          while ( false !== ( $file = readdir( $dir ) ) ) {
+            $data = @get_file_data( $path . "/" . $file, $headers, 'widget' );
+            if( $data[ 'type' ] == 'widget' && !empty( $data[ 'class' ] ) ) {
+              include_once( $path . "/" . $file );
+              if( class_exists( $data[ 'class' ] ) ) {
+                //var_dump( $data[ 'class' ] );
+                array_push( $_widgets[ $path ], array(
+                  'file' => $file,
+                  'headers' => $data,
+                ) );
+                register_widget( $data[ 'class' ] );
+              }
+            }
+          }
+        }
+        
+        wp_cache_set( 'widgets', $_widgets, 'usabilitydynamics' );
+        
+      }
 
     }
 
