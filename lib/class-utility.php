@@ -66,7 +66,7 @@ namespace UsabilityDynamics {
        *
        * @return mixed
        */
-      function _set_val( array &$arr, $path, $val ) {
+      static public function _set_val( array &$arr, $path, $val ) {
         $loc = & $arr;
 
         foreach( explode( '.', $path ) as $step ) {
@@ -83,7 +83,7 @@ namespace UsabilityDynamics {
        * @param $items
        * @return array
        */
-      function unwrap( $items ) {
+      static public function unwrap( $items ) {
 
         $_result = array();
 
@@ -117,7 +117,7 @@ namespace UsabilityDynamics {
        * @updated 2.0
        * @since 0.1
        */
-      static function array_to_object( $array = array() ) {
+      static public function array_to_object( $array = array() ) {
         return json_decode( json_encode( $array ) );
       }
 
@@ -127,7 +127,7 @@ namespace UsabilityDynamics {
        * @since 2.0
        * @author peshkov@UD
        */
-      static function object_to_array( $data ) {
+      static public function object_to_array( $data ) {
 
         if ( is_object( $data ) ) {
           $data = get_object_vars( $data );
@@ -151,7 +151,7 @@ namespace UsabilityDynamics {
        * @source Readme Parser ( http://www.tomsdimension.de/wp-plugins/readme-parser )
        * @author potanin@UD
        */
-      static function parse_readme( $readme_file = false ) {
+      static public function parse_readme( $readme_file = false ) {
 
         if( !$readme_file ) {
           $readme_file = untrailingslashit( TEMPLATEPATH ) . '/readme.txt';
@@ -231,7 +231,7 @@ namespace UsabilityDynamics {
        * @source http://php.net/manual/en/function.gettype.php
        * @since 1.0.4
        */
-      static function get_type( $var ) {
+      static public function get_type( $var ) {
 
         if( is_object( $var ) ) return get_class( $var );
         if( is_null( $var ) ) return 'null';
@@ -260,7 +260,7 @@ namespace UsabilityDynamics {
        * @param $arr
        * @return bool
        */
-      function is_associative( $arr ) {
+      static public function is_associative( $arr ) {
 
         if( !$arr ) {
           return false;
@@ -303,7 +303,7 @@ namespace UsabilityDynamics {
        *
        * @return mixed
        */
-      function repair_serialized_object( $input ) {
+      static public function repair_serialized_object( $input ) {
         return preg_replace( '!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $input );
       }
 
@@ -2233,13 +2233,15 @@ namespace UsabilityDynamics {
 
         return $content;
       }
-      
+
       /**
        * Parses passed directory for widget files
        * includes and registers widget if they exist
-       * 
-       * @param string $path
+       *
+       * @param string  $path
        * @param boolean $cache
+       *
+       * @return null
        * @author peshkov@UD
        */
       static public function maybe_load_widgets( $path, $cache = true ) {
