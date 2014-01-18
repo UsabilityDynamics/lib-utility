@@ -3,7 +3,7 @@
         "name": "usabilitydynamics/lib-utility",
         "description": "",
         "version": "",
-        "url": "http://github.com/usabilitydynamics/lib-utility"
+        "url": ""
     },
     "files": {
         "scripts/src/udx.utility.facebook.like.js": {
@@ -36,6 +36,13 @@
         },
         "scripts/src/udx.utility.md5.js": {
             "name": "scripts/src/udx.utility.md5.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "scripts/src/udx.utility.process.js": {
+            "name": "scripts/src/udx.utility.process.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -99,6 +106,17 @@
                 "type": "Object"
             },
             "class": ""
+        },
+        {
+            "file": "scripts/src/udx.utility.process.js",
+            "line": 1,
+            "description": "UsabilityDynamics Utility - Process\n\nHandles pocess running.",
+            "version": "0.2.3",
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "class": ""
         }
     ],
     "warnings": [
@@ -143,6 +161,14 @@
             "line": " scripts/src/udx.utility.md5.js:1"
         },
         {
+            "message": "unknown tag: version",
+            "line": " scripts/src/udx.utility.process.js:1"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " scripts/src/udx.utility.process.js:1"
+        },
+        {
             "message": "Missing item type\nUsabilityDynamics Utility",
             "line": " scripts/src/udx.utility.facebook.like.js:1"
         },
@@ -161,6 +187,10 @@
         {
             "message": "Missing item type\nUsabilityDynamics Utility",
             "line": " scripts/src/udx.utility.md5.js:1"
+        },
+        {
+            "message": "Missing item type\nUsabilityDynamics Utility - Process\n\nHandles pocess running.",
+            "line": " scripts/src/udx.utility.process.js:1"
         }
     ]
 }

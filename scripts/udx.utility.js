@@ -1,1 +1,1 @@
-define("udx.utility",function(a,b,c){console.log(c.id,"loaded")});
+define("udx.utility",function(a,b,c){return console.log(c.id,"loaded"),{create_slug:function(a){return a.replace(/[^a-zA-Z0-9_\s]/g,"").toLowerCase().replace(/\s/g,"_")}}});

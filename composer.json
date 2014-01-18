@@ -1,10 +1,11 @@
 {
   "name": "usabilitydynamics/lib-utility",
   "keywords": [
-    "utility"
+    "utility",
+    "process",
+    "job"
   ],
   "type": "library",
-  "require": {},
   "minimum-stability": "dev",
   "repositories": [
     {
@@ -15,7 +16,6 @@
   "autoload": {
     "classmap": [ "lib" ]
   },
-  "homepage": "http://github.com/usabilitydynamics/lib-utility",
   "authors": [
     {
       "name": "Andy Potanin",
@@ -39,13 +39,13 @@
   "extra": {
     "component": {
       "scripts": [
-        "scripts/utility.js",
-        "scripts/require.js"
+        "scripts/udx.utility.js",
+        "scripts/udx.utility.job.js",
+        "scripts/udx.utility.process.js",
+        "scripts/udx.utility.facebook.like.js",
+        "scripts/udx.utility.md5.js"
       ]
     }
-  },
-  "support": {
-    "issues": "https://github.com/usabilitydynamics/lib-utility/issues"
   },
   "license": "MIT"
 }
