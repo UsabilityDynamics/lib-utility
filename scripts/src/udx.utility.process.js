@@ -62,6 +62,8 @@ define( 'udx.utility.process', [ 'udx.utility', 'async', 'jquery' ], function() 
       onTimeout: function onTimeout( error, data ) {}
     });
 
+    this._start = new Date().getTime();
+
     //console.debug( 'process.settings', this.settings );
 
     // @chainable
@@ -112,6 +114,14 @@ define( 'udx.utility.process', [ 'udx.utility', 'async', 'jquery' ], function() 
 
             if( response.responseJSON ) {
               _context.settings.onStart( null, response.responseJSON );
+            }
+
+          },
+          success: function success( response ) {
+            console.debug( 'udx.utility.process', 'success' );
+
+            if( response.ok ) {
+              // _context.settings.onStart( null, response );
             }
 
           }

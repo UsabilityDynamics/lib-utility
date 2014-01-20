@@ -5,7 +5,7 @@
  * @returns {Object}
  */
 define( 'udx.utility', function( require, exports, module ) {
-  console.debug( module.id, 'loaded' );
+  // console.debug( module.id, 'loaded' );
 
   return {
 
@@ -17,7 +17,7 @@ define( 'udx.utility', function( require, exports, module ) {
      * @returns {*}
      */
     extend: function extend( destination, source ) {
-      console.debug( 'udx.utility', 'extend' );
+      // console.debug( 'udx.utility', 'extend' );
 
       for( var property in source ) {
         if( source[property] && source[property].constructor && source[property].constructor === Object ) {
@@ -37,7 +37,7 @@ define( 'udx.utility', function( require, exports, module ) {
      * @return
      */
     defaults: function( target, defaults ) {
-      console.debug( 'udx.utility', 'defaults' );
+      // console.debug( 'udx.utility', 'defaults' );
 
       return this.extend( defaults || {}, target || {} );
 
@@ -50,7 +50,7 @@ define( 'udx.utility', function( require, exports, module ) {
      * @return
      */
     create_slug: function create_slug( str ) {
-      console.debug( 'udx.utility', 'create_slug' );
+      // console.debug( 'udx.utility', 'create_slug' );
 
       return str.replace( /[^a-zA-Z0-9_\s]/g, "" ).toLowerCase().replace( /\s/g, '_' );
     }
