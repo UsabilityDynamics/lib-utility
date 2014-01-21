@@ -88,6 +88,57 @@ define( 'udx.utility.activity', [ 'udx.utility', 'async', 'jquery' ], function()
    *
    */
   Object.defineProperties( Activity.prototype, {
+    create: {
+      /**
+       * Create Activity.
+       *
+       */
+      value: function createActivity() {
+        console.debug( 'udx.utility.activity', 'createActivity' );
+
+        var _context = this;
+
+        jQuery.ajax({
+          url: _context.settings.ajax,
+          timeout: _context.settings.timeout,
+          async: true,
+          cache: false,
+          type: 'GET',
+          contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+          dataType: _context.settings.format || 'json',
+          headers: _context.settings.headers || {},
+          data: Utility.extend({
+            id: _context.settings.id,
+            activity: _context.settings.type,
+            event: 'create'
+          }, _context.settings.args ),
+          error: function error( error ) {
+            console.debug( 'udx.utility.activity', 'create', '::error', error );
+
+            _context.settings.onStart( new Error( 'Activity Start Error: ' + error ) );
+
+          },
+          complete: function complete( response, status ) {
+            console.debug( 'udx.utility.activity', 'create', '::complete', status );
+
+            if( response.responseJSON ) {
+              _context.settings.onCreate( null, response.responseJSON );
+            }
+
+            // Create Poll.
+            _context._timers.poll = window.setInterval( _context.poll.bind( _context ), _context.settings.poll );
+
+          }
+        });
+
+        // @chainable
+        return this;
+
+      },
+      enumerable: true,
+      configurable: true,
+      writable: true
+    },
     start: {
       /**
        * Start Activity.
@@ -110,19 +161,16 @@ define( 'udx.utility.activity', [ 'udx.utility', 'async', 'jquery' ], function()
           data: Utility.extend({
             id: _context.settings.id,
             activity: _context.settings.type,
-            event: 'start-process'
+            event: 'start'
           }, _context.settings.args ),
-          beforeSend: function beforeSend() {
-            // console.debug( 'udx.utility.activity', 'beforeSend', arguments );
-          },
           error: function error( error ) {
-            console.debug( 'udx.utility.activity', 'error', arguments );
+            console.debug( 'udx.utility.activity', 'start', '::error', error );
 
             _context.settings.onStart( new Error( 'Activity Start Error: ' + error ) );
 
           },
           complete: function complete( response, status ) {
-            console.debug( 'udx.utility.activity', 'complete', status );
+            console.debug( 'udx.utility.activity', 'start', 'complete', status );
 
             if( response.responseJSON ) {
               _context.settings.onStart( null, response.responseJSON );
@@ -130,14 +178,6 @@ define( 'udx.utility.activity', [ 'udx.utility', 'async', 'jquery' ], function()
 
             // Create Poll.
             _context._timers.poll = window.setInterval( _context.poll.bind( _context ), _context.settings.poll );
-
-          },
-          success: function success( response ) {
-            console.debug( 'udx.utility.activity', 'success' );
-
-            if( response.ok ) {
-              // _context.settings.onStart( null, response );
-            }
 
           }
         });
