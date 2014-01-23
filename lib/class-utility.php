@@ -1020,7 +1020,9 @@ namespace UsabilityDynamics {
         $src        = trailingslashit( $base_url ) . $meta[ 'file' ];
         foreach( $meta[ 'sizes' ] as $key => $size ) {
           if( ( $size[ 'width' ] == $width && $size[ 'height' ] == $height ) || $key == sprintf( 'resized-%dx%d', $width, $height ) ) {
-            $src          = str_replace( basename( $src ), $size[ 'file' ], $src );
+            if( !empty( $size[ 'file' ] ) ) {
+              $src = str_replace( basename( $src ), $size[ 'file' ], $src );
+            }
             $needs_resize = false;
             break;
           }
@@ -1035,9 +1037,11 @@ namespace UsabilityDynamics {
           }
 
           // Let metadata know about our new size.
-          $key                     = sprintf( 'resized-%dx%d', $width, $height );
+          $key = sprintf( 'resized-%dx%d', $width, $height );
           $meta[ 'sizes' ][ $key ] = $resized;
-          $src                     = str_replace( basename( $src ), $resized[ 'file' ], $src );
+          if( !empty( $resized[ 'file' ] ) ) {
+            $src = str_replace( basename( $src ), $resized[ 'file' ], $src );
+          }
           wp_update_attachment_metadata( $attachment_id, $meta );
 
           // Record in backup sizes so everything's cleaned up when attachment is deleted.
