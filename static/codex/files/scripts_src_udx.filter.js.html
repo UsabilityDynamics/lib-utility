@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>scripts/src/udx.utility.js - usabilitydynamics/lib-utility</title>
+    <title>scripts/src/udx.filter.js - usabilitydynamics/lib-utility</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -86,133 +86,65 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: scripts/src/udx.utility.js</h1>
+                        <h1 class="file-heading">File: scripts/src/udx.filter.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
 /**
- * UsabilityDynamics Utility
+ * Migrated from ud.global.js
  *
- * @version 0.2.3
- * @returns {Object}
  */
-define( &#x27;udx.utility&#x27;, function Utility( require, exports, module ) {
-  // console.debug( module.id, &#x27;loaded&#x27; );
+define( &#x27;udx.filter&#x27;, function() {
 
   return {
 
     /**
-     * HTTP GET Request
+     * Applies filter for the passed object
      *
-     * The callback method follows Node.js format of returning an Error object as the first argument, or null.
-     *
-     * @method remote_get
-     * @for Utility
-     *
-     * @param url {String|Object}
-     * @param callback {Function}
+     * @param name. string. required. Name of filter
+     * @param obj. object. required. Object which will go through called filter
+     * @author peshkov@UD
      */
-    remote_get: function remote_get() {
-      var request = makeHttpObject();
+    apply_filter: function( name, obj ) {
 
-      var url = arguments[0];
-      var callback = arguments[1];
+      /* Filter&#x27;s name and callback are required */
+      if( typeof obj === &#x27;undefined&#x27; || typeof name === &#x27;undefined&#x27; || typeof name !== &#x27;string&#x27; ) return obj;
+      /* jQuery must be inititialized */
+      if( typeof jQuery === &#x27;undefined&#x27; ) return obj;
+      /* Called filter must exist */
+      if( typeof window.__ud_filters === &#x27;undefined&#x27; || typeof window.__ud_filters[ name ] === &#x27;undefined&#x27; ) return obj;
 
-      request.open( &#x27;GET&#x27; , url, true);
-
-      request.send( null );
-
-      request.onreadystatechange = function() {
-
-        if (request.readyState == 4) {
-          if (request.status == 200) {
-            callback( null, request.responseText );
-          } else if (failure) {
-            callback( new Error( request.statusText) );
-          }
+      jQuery.each( window.__ud_filters[ name ], function( i, e ) {
+        if( typeof e === &#x27;function&#x27; ) {
+          obj = e( obj );
+        } else if( typeof e === &#x27;object&#x27; ) {
+          if( typeof obj !== &#x27;object&#x27; ) return false;
+          obj = jQuery.extend( true, obj, e );
         }
-
-      };
-
+      } );
+      return obj;
     },
 
     /**
-     * HTTP POST Request
+     * Adds filter to filters array.
      *
+     * @param name. string. required. Name of filter.
+     * @param calback. object|function. required. Filter which will be used on filter applying
+     * @author peshkov@UD
      */
-    remote_post: function remote_post() {
-      var request = makeHttpObject();
-
-      var url = arguments[0];
-      var callback = arguments[1];
-
-      request.open( &#x27;POST&#x27; , url, true);
-
-      request.send( null );
-
-      request.onreadystatechange = function() {
-
-        if (request.readyState == 4) {
-          if (request.status == 200) {
-            callback( null, request.responseText );
-          } else if (failure) {
-            callback( new Error( request.statusText) );
-          }
-        }
-
-      };
-
-    },
-
-    /**
-     * Deep Extend Object.
-     *
-     * @param destination
-     * @param source
-     * @returns {*}
-     */
-    extend: function extend( destination, source ) {
-      // console.debug( &#x27;udx.utility&#x27;, &#x27;extend&#x27; );
-
-      for( var property in source ) {
-        if( source[property] &amp;&amp; source[property].constructor &amp;&amp; source[property].constructor === Object ) {
-          destination[property] = destination[property] || {};
-          arguments.callee( destination[property], source[property] );
-        } else {
-          destination[property] = source[property];
-        }
-      }
-      return destination;
-    },
-
-    /**
-     * Extend Defaults into Object
-     *
-     * @param str
-     * @return
-     */
-    defaults: function( target, defaults ) {
-      // console.debug( &#x27;udx.utility&#x27;, &#x27;defaults&#x27; );
-
-      return this.extend( defaults || {}, target || {} );
-
-    },
-
-    /**
-     * Create Slug from String.
-     *
-     * @param str
-     * @return
-     */
-    create_slug: function create_slug( str ) {
-      // console.debug( &#x27;udx.utility&#x27;, &#x27;create_slug&#x27; );
-
-      return str.replace( /[^a-zA-Z0-9_\s]/g, &quot;&quot; ).toLowerCase().replace( /\s/g, &#x27;_&#x27; );
+    add_filter: function( name, callback ) {
+      /* Filter&#x27;s name and callback are required */
+      if( typeof callback === &#x27;undefined&#x27; || typeof name === &#x27;undefined&#x27; || typeof name !== &#x27;string&#x27; ) return;
+      /* Add object to filter */
+      if( typeof window.__ud_filters === &#x27;undefined&#x27; ) window.__ud_filters = {};
+      if( typeof window.__ud_filters[ name ] === &#x27;undefined&#x27; ) window.__ud_filters[ name ] = [];
+      window.__ud_filters[ name ].push( callback );
     }
-
   }
 
-});
+} );
+
+
     </pre>
 </div>
 

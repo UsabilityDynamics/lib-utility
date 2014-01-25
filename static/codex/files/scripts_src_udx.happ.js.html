@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>scripts/src/udx.happ.js - usabilitydynamics/lib-utility</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="usabilitydynamics/lib-utility"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/Utility.html">Utility</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/event.html">event</a></li>
+            
+                <li><a href="../modules/ud.html">ud</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: scripts/src/udx.happ.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * UD HAPP. Single page Application&#x27;s Framework
+ *
+ * @required jquery, knockout, knockout.mapping
+ * @version 0.1
+ * @author peshkov@UD
+ * @copyright Usability Dynamics, inc
+ */
+
+var ud, ko, Application = {};
+
+Application.version = &#x27;0.1&#x27;;
+
+/**
+ * Expands application.
+ * All models and specific app libraries must be added using this function.
+ *
+ * @author peshkov@UD
+ */
+Application.define = function( instance, data ) {
+  if( typeof this.__ !== &#x27;object&#x27; ) return null;
+  var self = this.__;
+  instance = instance.split( &#x27;.&#x27; );
+  switch( instance[0] ) {
+    case &#x27;core&#x27;:
+      self.core = self.core || {};
+      self.core[ instance[ 1 ] ] = data;
+      break;
+    case &#x27;model&#x27;:
+      self.models = self.models || {};
+      self.models[ instance[ 1 ] ] = data;
+      break;
+  }
+}
+
+/**
+ * Loads application ( init and render it )
+ *
+ * @author peshkov@UD
+ */
+Application.load = function( args ) {
+
+  /** If application is already loaded, we just return it. */
+  if( typeof this.__ === &#x27;object&#x27; ) {
+    return this.__;
+  }
+
+  /* Try to determine if model&#x27;s name is set or model&#x27;s object already exists */
+  var self = jQuery.extend( true, {
+    /* */
+    &#x27;_required&#x27;: {},
+    /* Redefines version of HAPP. It&#x27;s related to HAPP core files: which version files should be loaded. for example &#x27;latest&#x27;. */
+    &#x27;version&#x27;: Application.version,
+    /* host */
+    &#x27;url&#x27;: &#x27;//&#x27; + location.host + &#x27;/&#x27;,
+    /* url to models */
+    &#x27;model_url&#x27;: &#x27;//&#x27; + location.host + &#x27;/model/&#x27;,
+    /* url to views */
+    &#x27;view_url&#x27;: &#x27;//&#x27; + location.host + &#x27;/view/&#x27;,
+    /*  */
+    &#x27;modules&#x27;: {},
+    /* */
+    &#x27;models&#x27;: {},
+    /* Socket settings if socket is needed. See socket.js for detailed information. */
+    &#x27;socket&#x27;: false,
+    /* Default module  */
+    &#x27;default_module&#x27;: false,
+    &#x27;ui&#x27;: {
+      &#x27;content&#x27;: &#x27;#content&#x27;
+    },
+    &#x27;listeners&#x27;: {
+      /* Application is rendered */
+      &#x27;rendered&#x27;: function( self ) {
+        return null;
+      },
+      /* Filter which can be used for menu item&#x27;s HTML appending */
+      &#x27;add_menu_item&#x27;: function( item, module, self ) {
+        return item;
+      },
+      /* Filter which can be used for module content wrapper&#x27;s HTML appending */
+      &#x27;add_content_wrapper&#x27;: function( item, module, self ) {
+        return item;
+      },
+      /* Called after section selected. See Sammy implementation */
+      &#x27;section_selected&#x27;: function( section, self ) {
+        return null;
+      },
+      /* Called on successfull connection to socket */
+      &#x27;socket_connected&#x27;: function( self ) {
+        return null;
+      }
+    }
+  }, typeof args === &#x27;object&#x27; ? args : ( typeof args === &#x27;string&#x27; ? { &#x27;model&#x27;: args } : {} ), {} );
+
+  /* Application is ready and rendered */
+  self.rendered = false;
+
+  /* */
+  self.sections = {};
+
+  /* */
+  self._required = jQuery.extend( true, self._required, {
+    &#x27;js&#x27;: {
+      //&#x27;_&#x27;: &#x27;//ud-cdn.com/js/lodash/1.0.0/lodash.js&#x27;,
+      &#x27;async&#x27;: &#x27;//ud-cdn.com/js/async/1.0/async.js&#x27;,
+      &#x27;ko&#x27;: &#x27;//ud-cdn.com/js/knockout/latest/knockout.js&#x27;,
+      &#x27;ko.mapping&#x27;: &#x27;//ud-cdn.com/js/knockout.mapping/latest/knockout.mapping.js&#x27;,
+      &#x27;knockout.ud&#x27;: &#x27;//ud-cdn.com/js/knockout.ud/latest/knockout.ud.js&#x27;,
+      &#x27;Sammy&#x27;: &#x27;//ud-cdn.com/js/sammy/0.7.1/sammy.js&#x27;,
+      &#x27;io&#x27;: &#x27;//ud-cdn.com/js/ud.socket/1.0.0/ud.socket.js&#x27;,
+      //&#x27;jQuery.cookie&#x27;: &#x27;//ud-cdn.com/js/jquery.cookie/1.7.3/jquery.cookie.js&#x27;,
+      &#x27;bootstrap&#x27;: &#x27;//ud-cdn.com/js/bootstrap/2.2.2/bootstrap.min.js&#x27;,
+      /* Specific Framework libraries */
+      &#x27;Application.__.core.view_model&#x27;: &#x27;//ud-cdn.com/js/ud.happ/&#x27; + self.version + &#x27;/core/view_model.js&#x27;,
+      &#x27;Application.__.core.socket&#x27;: &#x27;//ud-cdn.com/js/ud.happ/&#x27; + self.version + &#x27;/core/socket.js&#x27;,
+      &#x27;Application.__.core.json_editor&#x27;: &#x27;//ud-cdn.com/js/ud.happ/&#x27; + self.version + &#x27;/core/json_editor.js&#x27;
+    },
+    &#x27;css&#x27;: {
+      //&#x27;bootstrap&#x27;: &#x27;//ud-cdn.com/js/bootstrap/2.2.2/assets/bootstrap.min.css&#x27;,
+      //&#x27;bootstrap-responsive&#x27;: &#x27;//ud-cdn.com/js/bootstrap/2.2.2/assets/bootstrap-responsive.css&#x27;
+    }
+  } );
+
+  /**
+   * Writes error to console.
+   *
+   * @author peshkov@UD
+   */
+  self.show_error = function( error, event ) {
+    if( typeof console !== &#x27;undefined&#x27; ) {
+      console.error( typeof event !== &#x27;undefined&#x27; ? event : &#x27;ERROR&#x27;, error );
+    }
+    return null;
+  }
+
+  /**
+   * Determine if passed arg is url
+   *
+   * @param string url
+   * @author peshkov@UD
+   */
+  self.is_url = function( url ) {
+    if( typeof url === &#x27;string&#x27; &amp;&amp; /^((https?|ftp):)?\/\/([\-A-Z0-9.]+)(\/[\-A-Z0-9+&amp;@#\/%=~_|!:,.;]*)?(\?[A-Z0-9+&amp;@#\/%=~_|!:,.;]*)?/i.test( url ) ) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Inits application.
+   * Should be called on document ready
+   *
+   * @author peshkov@UD
+   */
+  self._init = function() {
+
+    if( self.rendered ) return null;
+
+    /* Prepare modules and render modules data */
+    for( var i in self.modules ) {
+
+      self.modules[i] = jQuery.extend( true, {
+        &#x27;name&#x27;: i,
+        &#x27;description&#x27;: &#x27;&#x27;,
+        &#x27;type&#x27;: &#x27;module&#x27;, // Available values: link, module
+        &#x27;menu&#x27;: &#x27;#modules_menu&#x27;, // Selector of menu wrapper where the module&#x27;s link will be added
+        &#x27;id&#x27;: &#x27;module_&#x27; + i,
+        &#x27;href&#x27;: false,
+        &#x27;parent&#x27;: false, // Parent module&#x27;s slug. Can be used for dropdown menu, etc.
+        &#x27;model&#x27;: self.model_url + i + &#x27;.js&#x27;,
+        &#x27;view&#x27;: self.view_url + i + &#x27;.tpl&#x27;,
+        &#x27;args&#x27;: {},
+        &#x27;view_model&#x27;: null
+      }, typeof self.modules[i] === &#x27;object&#x27; ? self.modules[i] : { &#x27;name&#x27;: self.modules[i] } );
+
+      /**
+       *
+       */
+      switch( self.modules[i].type ) {
+
+        case &#x27;module&#x27;:
+          /* Add all required model files */
+          if( typeof self.modules[i].model === &#x27;string&#x27; &amp;&amp; self.is_url( self.modules[i].model ) ) {
+            self._required.js[ &#x27;module.&#x27; + i ] = self.modules[i].model;
+          }
+          /* Push current module to sections list. It&#x27;s used by Sammy functionality. */
+          self.sections[ self.modules[i].id ] = i;
+          /* Add module&#x27;s container if it doesn&#x27;t exist */
+          if( jQuery( self.ui.content ).length &gt; 0 &amp;&amp; !jQuery( &#x27;#&#x27; + self.modules[i].id ).length &gt; 0 ) {
+            var content_wrapper = &#x27;&lt;div id=&quot;&#x27; + self.modules[i].id + &#x27;&quot; class=&quot;module-container&quot;&gt;&lt;/div&gt;&#x27;;
+            try { content = self.listeners.add_content_wrapper( content_wrapper, self.modules[i], self ) }
+            catch( e ) { self.show_error( &#x27;add_content_wrapper&#x27;, e ) }
+            if( typeof content_wrapper === &#x27;string&#x27; ) {
+              jQuery( self.ui.content ).append( content_wrapper );
+            }
+          }
+          break;
+
+        case &#x27;link&#x27;:
+
+          break;
+
+      }
+
+      /* Add menu item to HTML */
+      if( jQuery( self.modules[i].menu ).length &gt; 0 ) {
+        var href = self.is_url( self.modules[i].href ) ? self.modules[i].href : &#x27;#&#x27; + self.modules[i].id;
+        var menu_item = &#x27;&lt;a href=&quot;&#x27; + href + &#x27;&quot;&gt;&#x27; + self.modules[i].name + &#x27;&lt;/a&gt;&#x27;;
+        try { menu_item = self.listeners.add_menu_item( menu_item, self.modules[i], self ) }
+        catch( e ) { self.show_error( &#x27;add_menu_item&#x27;, e ) }
+        if( typeof menu_item === &#x27;string&#x27; ) {
+          menu_item = jQuery( menu_item );
+          menu_item.each( function( index, e ) {
+            var a = typeof jQuery( e ).attr( &#x27;href&#x27; ) !== &#x27;undefined&#x27; ? jQuery( e ) : jQuery( &#x27;a&#x27;, e );
+            if( a.length &gt; 0 ) {
+              a.attr( &#x27;module&#x27;, i ).attr( &#x27;type&#x27;, self.modules[i].type );
+            }
+          } );
+          jQuery( self.modules[i].menu ).append( menu_item );
+        }
+      }
+
+    }
+
+    /* Loads required CSS */
+    if( typeof self._required.css === &#x27;object&#x27; ) {
+      jQuery.each( self._required.css, function( style, url ) {
+        ud.load.css( url );
+      } );
+    }
+
+    /* Load all required files before continue */
+    ud.load.js( self._required.js, function() {
+
+      /* Initialize Router */
+      self.router = self.router();
+
+      /**
+       * Determine if we need to load addtional javascript/css files.
+       * Specific module javascript/css files must be loaded before continue!
+       */
+      var _required = {};
+
+      jQuery.each( self.models, function( i, m ) {
+        if( typeof m === &#x27;object&#x27; &amp;&amp; typeof m._required === &#x27;object&#x27; ) {
+          if( typeof m._required.js === &#x27;object&#x27; ) {
+            jQuery.each( m._required.js, function( script, url ) {
+              _required[ script ] = url;
+            } );
+          }
+          if( typeof m._required.css === &#x27;object&#x27; ) {
+            jQuery.each( m._required.css, function( style, url ) {
+              /* Load module&#x27;s CSS */
+              ud.load.css( url );
+            } );
+          }
+        }
+      } );
+
+      Object.size = function( obj ) {
+        var size = 0, key;
+        for( key in obj ) { if( obj.hasOwnProperty( key ) ) size++; }
+        return size;
+      };
+
+      if( Object.size( _required ) &gt; 0 ) {
+        ud.load.js( _required, self._run );
+      } else {
+        self._run();
+      }
+
+    } );
+
+  }
+
+  /**
+   * Runs application.
+   *
+   * It does the following steps:
+   * 1. tries connecting to socket;
+   * 2. runs router.
+   *
+   * Must be called after init.
+   *
+   * @author peshkov@UD
+   */
+  self._run = function() {
+
+    if( self.rendered ) return null;
+
+    /* Determine is socket arguments are set */
+    if( self.socket &amp;&amp; typeof self.socket === &#x27;object&#x27; ) {
+
+      self.core.socket( self.socket, function( socket ) {
+        self.socket = socket;
+        try { self.listeners.socket_connected( self ) }
+        catch( e ) { self.show_error( &#x27;socket_connected&#x27;, e ) }
+        /* Run App */
+        self.router.run();
+      } );
+
+    } else {
+
+      /* Run App */
+      self.router.run();
+
+      // console.log( self );
+
+    }
+
+  }
+
+  /**
+   * Sets ( inits ) Router
+   *
+   * @author peshkov@UD
+   */
+  self.router = function() {
+
+    /* Pagination. History implementation. */
+    return new Sammy( function() {
+
+      this.home = self.url;
+
+      this.loading = false;
+
+      this.get( /\#(.*)/, function( router ) {
+
+        /* Looks like router did not finish previous process. */
+        if( router.app.loading ) {
+          return null;
+        }
+        router.app.loading = true;
+
+        /* Parse query hash and set params */
+        var params = {
+          &#x27;section&#x27; : false,
+          &#x27;args&#x27; : []
+        };
+        jQuery.each( router.params[ &#x27;splat&#x27; ][0].split( &#x27;/&#x27; ), function( i,e ) {
+          if( e.length == 0 ) return null;
+          else if ( !params.section ) params.section = e;
+          else params.args.push( e );
+        } );
+
+        /* Initialize Knockout View Model if it&#x27;s undefined */
+        var module = typeof self.sections[ params.section ] !== &#x27;undefined&#x27; ? self.sections[ params.section ] : false;
+
+        /* Get the default ( home ) section if the called one doesn&#x27;t exist */
+        if( !module || typeof self.modules[ module ] === &#x27;undefined&#x27; ) {
+          self.show_error( &#x27;Module with the hash \&#x27;&#x27; + params.section + &#x27;\&#x27; doesn\&#x27;t exist.&#x27;,
+            &#x27;Sammy.get( \&#x27;#:module\&#x27; )&#x27; );
+          router.app.loading = false;
+          if( typeof self.modules[ self.default_module ] !== &#x27;undefined&#x27; &amp;&amp; typeof self.sections[ self.modules[ self.default_module ].id ] !== &#x27;undefined&#x27; ) {
+            router.app.runRoute( &#x27;get&#x27;, &#x27;#&#x27; + self.modules[ self.default_module ].id );
+          }
+          return null;
+        }
+
+        if( self.modules[ module ].view_model === null || typeof self.modules[ module ].view_model !== &#x27;object&#x27; ) {
+          self.modules[ module ].view_model = self.core.view_model( {
+            &#x27;scope&#x27;: self,
+            &#x27;model&#x27;: typeof self.models[ module ] === &#x27;object&#x27; ? self.models[ module ] : {},
+            &#x27;view&#x27;: self.modules[ module ].view,
+            &#x27;args&#x27;: jQuery.extend( self.modules[ module ].args, { &#x27;module&#x27;: module } ),
+            &#x27;container&#x27;: &#x27;#&#x27; + params.section
+          } );
+          /**
+           * Timeout is used to prevent the issues with socket requests. Hope, that 300msec is always enought.
+           * I have no idea why it happens, but when page loads on specific section which is using socket request on init,
+           * socket doesn&#x27;t send response. Probably the issue is related to socket object links ( scope ).
+           * peshkov@UD
+           */
+          setTimeout( function() {
+            self.modules[ module ].view_model.apply( params.args );
+          }, 300 );
+        } else {
+          self.modules[ module ].view_model.update( params.args );
+        }
+
+        /* Determine if the module is already selected we stop process here. */
+        var selected_section = self.sections[ params.section ];
+        if( typeof self.selected_section !== &#x27;undefined&#x27; &amp;&amp; selected_section === self.selected_section ) {
+          // Finish process
+          router.app.loading = false;
+          return null;
+        }
+
+        self.selected_section = selected_section;
+
+        for( var a in self.sections ) {
+          if( typeof self.sections[a] !== &#x27;function&#x27; ) {
+            jQuery( &#x27;a[href=&quot;#&#x27; + a + &#x27;&quot;]&#x27; ).removeClass( &#x27;selected&#x27; );
+          }
+        }
+
+        for( var a in self.sections ) {
+          if( typeof self.sections[a] !== &#x27;function&#x27; ) {
+            var section = jQuery( &#x27;#&#x27; + a ).get( 0 );
+            jQuery( section ).hide();
+            if( jQuery( section ).attr( &#x27;id&#x27; ) === params.section ) {
+              if( self.modules[ module ].parent &amp;&amp; typeof self.modules[ self.modules[ module ].parent ] === &#x27;object&#x27; ) {
+                jQuery( &#x27;a[href=&quot;#&#x27; + self.modules[ self.modules[ module ].parent ].id + &#x27;&quot;][type=&quot;module&quot;]&#x27; ).addClass( &#x27;selected&#x27; );
+              }
+              jQuery( &#x27;a[href=&quot;#&#x27; + params.section + &#x27;&quot;]&#x27; ).addClass( &#x27;selected&#x27; );
+              jQuery( section ).fadeIn( 500, function() {
+                jQuery( this ).show( 500, function() {
+                  // Finish process
+                  router.app.loading = false;
+                } );
+              } );
+            }
+          }
+        }
+
+        try { self.listeners.section_selected( params.section, self ) }
+        catch( e ) { self.show_error( &#x27;section_selected&#x27;, e ) }
+
+        if( !self.rendered ) {
+          try { self.listeners.rendered( self ) }
+          catch( e ) { self.show_error( &#x27;rendered&#x27;, e ) }
+          self.rendered = true;
+        }
+
+      });
+
+      this.get( &#x27;&#x27;, function( router ) {
+        var reg = new RegExp( &quot;(https?|ftp):&quot;, &#x27;g&#x27; );
+        if( router.app.home.replace( reg, &#x27;&#x27; ) !== location.href.replace( reg, &#x27;&#x27; ) ) {
+          window.location = location.href;
+        } else {
+          if( self.default_module &amp;&amp; jQuery( &#x27;#&#x27; + self.default_module ).length &gt; 0 ) {
+            router.app.runRoute( &#x27;get&#x27;, &#x27;#&#x27; + self.default_module );
+          } else {
+            //Ignore.
+          }
+        }
+      } );
+
+    });
+
+  }
+
+  this.__ = self;
+
+  self._init();
+
+  return this.__;
+
+}
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

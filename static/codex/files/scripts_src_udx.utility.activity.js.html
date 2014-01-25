@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>scripts/src/udx.utility.process.js - usabilitydynamics/lib-utility</title>
+    <title>scripts/src/udx.utility.activity.js - usabilitydynamics/lib-utility</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -86,20 +86,24 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: scripts/src/udx.utility.process.js</h1>
+                        <h1 class="file-heading">File: scripts/src/udx.utility.activity.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
 /**
- * UsabilityDynamics Utility - Process
+ * UsabilityDynamics Utility - Activity
  *
  * Handles pocess running.
  *
  * @example
  *
- *    require( &#x27;udx.utility.process&#x27; ).create({
- *      id: &#x27;some-task&#x27;,
- *      url: &#x27;admin-ajax.php?action=some-task&#x27;,
+ *    var Activity = require( &#x27;udx.utility.activity&#x27; );
+ *
+ *    Activity.create({
+ *      ajax: &#x27;admin-ajax.php?action=some-task&#x27;,
+ *      args: {
+ *        id: &#x27;some-task&#x27;,
+ *      },
  *      interval: 100,
  *      onError: function() {},
  *      onComplete: function() {}
@@ -107,8 +111,8 @@
  *
  * @version 0.1.0
  */
-define( &#x27;udx.utility.process&#x27;, [ &#x27;udx.utility&#x27;, &#x27;async&#x27;, &#x27;jquery&#x27; ], function() {
-  console.debug( &#x27;udx.utility.process&#x27;, &#x27;loaded&#x27; );
+define( &#x27;udx.utility.activity&#x27;, [ &#x27;udx.utility&#x27;, &#x27;async&#x27;, &#x27;jquery&#x27; ], function() {
+  console.debug( &#x27;udx.utility.activity&#x27;, &#x27;loaded&#x27; );
 
   // Modules.
   var Auto      = require( &#x27;async&#x27; ).auto;
@@ -116,50 +120,58 @@ define( &#x27;udx.utility.process&#x27;, [ &#x27;udx.utility&#x27;, &#x27;async&
   var Utility   = require( &#x27;udx.utility&#x27; );
 
   /**
-   * Process Instance
+   * Activity Instance
    *
    * @param args              {Object}
-   * @param args.id           {String}
-   * @param args.ajax         {String}
-   * @param args.args         {Object}
-   * @param args.poll         {Number}
+   * @param args.id           {String} ID of activity.
+   * @param args.activity     {String} Name of activity type.
+   * @param args.ajax         {String} URL of AJAX handler.
+   * @param args.args         {Object} Extra arguments to add to request.
+   * @param args.poll         {Number} Update poll interval.
    * @param args.timeout      {Number}
    * @param args.protocol     {String}
    * @param args.format       {String}
    * @param args.headers      {Object}
    * @param args.onStart      {Function}
+   * @param args.onCreate     {Function}
+   * @param args.onPoll       {Function}
    * @param args.onComplete   {Function}
    * @param args.onError      {Function}
    * @param args.onTimeout    {Function}
    *
-   * @returns {Process}
+   * @returns {Activity}
    * @constructor
    */
-  function Process( args ) {
-    console.debug( &#x27;udx.utility.process&#x27;, &#x27;new Process&#x27; );
+  function Activity( args ) {
+    console.debug( &#x27;udx.utility.activity&#x27;, &#x27;new Activity&#x27; );
 
     // Configure Settings.
     this.settings = Utility.defaults( args, {
-      id: null,
       ajax: null,
+      id: null,
+      activity: &#x27;&#x27;,
       args: {},
-      poll: 5000,
-      timeout: 10000,
+      poll: 15000,
+      timeout: 5000,
       protocol: &#x27;ajax&#x27;,
       format: &#x27;json&#x27;,
       headers: {},
       onStart: function onStart( error, data ) {},
+      onCreate: function onCreate( error, data ) {},
+      onPoll: function onPoll( error, data ) {},
       onComplete: function onComplete( error, data ) {},
       onError: function onError( error, data ) {},
       onTimeout: function onTimeout( error, data ) {}
     });
 
-    this._start = new Date().getTime();
-
-    //console.debug( &#x27;process.settings&#x27;, this.settings );
+    // Create Timers Container.
+    this._timers = {
+      create: new Date().getTime(),
+      poll: undefined
+    };
 
     // @chainable
-    return Process.instances[ args.id ] = this;
+    return Activity.instances[ this.settings.id ] = this;
 
   }
 
@@ -167,14 +179,14 @@ define( &#x27;udx.utility.process&#x27;, [ &#x27;udx.utility&#x27;, &#x27;async&
    * Instance Properties.
    *
    */
-  Object.defineProperties( Process.prototype, {
-    start: {
+  Object.defineProperties( Activity.prototype, {
+    create: {
       /**
-       * Start Process.
+       * Create Activity.
        *
        */
-      value: function startProcess() {
-        console.debug( &#x27;udx.utility.process&#x27;, &#x27;startProcess&#x27; );
+      value: function createActivity() {
+        console.debug( &#x27;udx.utility.activity&#x27;, &#x27;createActivity&#x27; );
 
         var _context = this;
 
@@ -188,33 +200,76 @@ define( &#x27;udx.utility.process&#x27;, [ &#x27;udx.utility&#x27;, &#x27;async&
           dataType: _context.settings.format || &#x27;json&#x27;,
           headers: _context.settings.headers || {},
           data: Utility.extend({
-            event: &#x27;start-process&#x27;,
             id: _context.settings.id,
-            type: _context.settings.type
+            activity: _context.settings.type,
+            event: &#x27;create&#x27;
           }, _context.settings.args ),
-          beforeSend: function beforeSend() {
-            // console.debug( &#x27;udx.utility.process&#x27;, &#x27;beforeSend&#x27;, arguments );
-          },
           error: function error( error ) {
-            console.debug( &#x27;udx.utility.process&#x27;, &#x27;error&#x27;, arguments );
+            console.debug( &#x27;udx.utility.activity&#x27;, &#x27;create&#x27;, &#x27;::error&#x27;, error );
 
-            _context.settings.onStart( new Error( &#x27;Process Start Error: &#x27; + error ) );
+            _context.settings.onStart( new Error( &#x27;Activity Start Error: &#x27; + error ) );
 
           },
           complete: function complete( response, status ) {
-            console.debug( &#x27;udx.utility.process&#x27;, &#x27;complete&#x27;, status );
+            console.debug( &#x27;udx.utility.activity&#x27;, &#x27;create&#x27;, &#x27;::complete&#x27;, status );
+
+            if( response.responseJSON ) {
+              _context.settings.onCreate( null, response.responseJSON );
+            }
+
+            // Create Poll.
+            _context._timers.poll = window.setInterval( _context.poll.bind( _context ), _context.settings.poll );
+
+          }
+        });
+
+        // @chainable
+        return this;
+
+      },
+      enumerable: true,
+      configurable: true,
+      writable: true
+    },
+    start: {
+      /**
+       * Start Activity.
+       *
+       */
+      value: function startActivity() {
+        console.debug( &#x27;udx.utility.activity&#x27;, &#x27;startActivity&#x27; );
+
+        var _context = this;
+
+        jQuery.ajax({
+          url: _context.settings.ajax,
+          timeout: _context.settings.timeout,
+          async: true,
+          cache: false,
+          type: &#x27;GET&#x27;,
+          contentType: &#x27;application/x-www-form-urlencoded; charset=UTF-8&#x27;,
+          dataType: _context.settings.format || &#x27;json&#x27;,
+          headers: _context.settings.headers || {},
+          data: Utility.extend({
+            id: _context.settings.id,
+            activity: _context.settings.type,
+            event: &#x27;start&#x27;
+          }, _context.settings.args ),
+          error: function error( error ) {
+            console.debug( &#x27;udx.utility.activity&#x27;, &#x27;start&#x27;, &#x27;::error&#x27;, error );
+
+            _context.settings.onStart( new Error( &#x27;Activity Start Error: &#x27; + error ) );
+
+          },
+          complete: function complete( response, status ) {
+            console.debug( &#x27;udx.utility.activity&#x27;, &#x27;start&#x27;, &#x27;complete&#x27;, status );
 
             if( response.responseJSON ) {
               _context.settings.onStart( null, response.responseJSON );
             }
 
-          },
-          success: function success( response ) {
-            console.debug( &#x27;udx.utility.process&#x27;, &#x27;success&#x27; );
-
-            if( response.ok ) {
-              // _context.settings.onStart( null, response );
-            }
+            // Create Poll.
+            _context._timers.poll = window.setInterval( _context.poll.bind( _context ), _context.settings.poll );
 
           }
         });
@@ -229,11 +284,14 @@ define( &#x27;udx.utility.process&#x27;, [ &#x27;udx.utility&#x27;, &#x27;async&
     },
     poll: {
       /**
-       * Poll Started Process.
+       * Poll Started Activity.
        *
        */
-      value: function pollProcess() {
-        console.debug( &#x27;udx.utility.process&#x27;, &#x27;pollProcess&#x27; );
+      value: function pollActivity() {
+        // console.debug( &#x27;udx.utility.activity&#x27;, &#x27;pollActivity&#x27; );
+
+        // Run Poll Callback.
+        // this.settings.onPoll( error, data );
 
         // @chainable
         return this;
@@ -245,11 +303,11 @@ define( &#x27;udx.utility.process&#x27;, [ &#x27;udx.utility&#x27;, &#x27;async&
     },
     recover: {
       /**
-       * Poll Started Process.
+       * Poll Started Activity.
        *
        */
-      value: function recoverProcess() {
-        console.debug( &#x27;udx.utility.process&#x27;, &#x27;recoverProcess&#x27; );
+      value: function recoverActivity() {
+        console.debug( &#x27;udx.utility.activity&#x27;, &#x27;recoverActivity&#x27; );
 
         // @chainable
         return this;
@@ -265,15 +323,15 @@ define( &#x27;udx.utility.process&#x27;, [ &#x27;udx.utility&#x27;, &#x27;async&
    * Constructor Properties.
    *
    */
-  Object.defineProperties( Process, {
+  Object.defineProperties( Activity, {
     create: {
       /**
-       * Create Process.
+       * Create Activity.
        *
-       * @returns {Process}
+       * @returns {Activity}
        */
       value: function create() {
-        return new Process( arguments[0] );
+        return new Activity( arguments[0] );
       },
       enumerable: true,
       configurable: true,
@@ -291,8 +349,8 @@ define( &#x27;udx.utility.process&#x27;, [ &#x27;udx.utility&#x27;, &#x27;async&
     }
   });
 
-  // Expose Process.
-  return Process;
+  // Expose Activity.
+  return Activity;
 
 });
 
