@@ -9,7 +9,7 @@
  */
 namespace UsabilityDynamics {
 
-  if( !class_exists( 'UsabilityDynamics\Utility' ) ) {
+  if( !class_exists( 'UsabilityDynamics\Loader' ) ) {
 
     /**
      * Loader implements a PSR-0 class loader
@@ -66,10 +66,10 @@ namespace UsabilityDynamics {
       /**
        * Configuration.
        *
-       * @property $options
+       * @property $settings
        * @type {Object}
        */
-      public $options = stdClass;
+      public $settings = array();
 
       /**
        * Array with fallback directories for auto-loading.
@@ -108,16 +108,20 @@ namespace UsabilityDynamics {
        * @version 0.0.2
        * @since 0.0.2
        */
-      function __construct( array $settings ) {
+      function __construct( $settings = array() ) {
 
         // Save Loader Settings.
-        $this->$settings = (object) $settings;
+        $this->settings = json_decode( json_encode( $settings ) );
 
         // Load libraries that use namespaces.
-        $this->set_namespace( $this->$settings->controllers );
+        if( isset( $this->settings->controllers ) ) {
+          $this->set_namespace( $this->settings->controllers );
+        }
 
         // Loads libraries that do not use namespaces.
-        $this->add_class_map( $this->$settings->helpers );
+        if( isset( $this->settings->helpders ) ) {
+          $this->add_class_map( $this->settings->helpers );
+        }
 
         // Register Autoloader.
         $this->register( true );
