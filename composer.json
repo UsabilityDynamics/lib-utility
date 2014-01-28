@@ -13,6 +13,9 @@
       "url": "http://repository.usabilitydynamics.com"
     }
   ],
+  "require": {
+    "UsabilityDynamics/wp-meta-box": "master"
+  },
   "autoload": {
     "classmap": [ "lib" ]
   },
