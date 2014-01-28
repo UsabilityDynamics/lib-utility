@@ -852,9 +852,11 @@ namespace UsabilityDynamics {
        * @method all_image_sizes
        * @for Utility
        *
+       * @param $size {String}
+       *
        * @returns array keys: 'width' and 'height'
        */
-      static public function all_image_sizes() {
+      static public function all_image_sizes( $size = '' ) {
         global $_wp_additional_image_sizes;
 
         $image_sizes = (array) $_wp_additional_image_sizes;
@@ -874,9 +876,14 @@ namespace UsabilityDynamics {
           'height' => intval( get_option( 'large_size_h' ) )
         );
 
-        foreach( (array) $image_sizes as $size => $data ) {
-          $image_sizes[ $size ]            = array_filter( (array) $data );
-          $image_sizes[ $size ][ 'label' ] = self::de_slug( $size );
+        foreach( (array) $image_sizes as $_size => $data ) {
+          $image_sizes[ $_size ]            = array_filter( (array) $data );
+          $image_sizes[ $_size ][ 'label' ] = self::de_slug( $_size );
+          $image_sizes[ $_size ][ 'crop' ]  = isset( $image_sizes[ $_size ][ 'crop' ] ) && $image_sizes[ $_size ][ 'crop' ] ? $image_sizes[ $_size ][ 'crop' ] : false;
+        }
+
+        if( $size ) {
+          return array_filter( (array) $image_sizes[ $size ] );
         }
 
         return array_filter( (array) $image_sizes );
