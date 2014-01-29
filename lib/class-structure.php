@@ -10,8 +10,8 @@ namespace UsabilityDynamics {
 
   if( !class_exists( 'UsabilityDynamics\Structure' ) ) {
 
-  static class Structure {
-    
+    class Structure {
+      
       public function define( $args = array() ) {
       
         $args = wp_parse_args( $args, array(
@@ -23,6 +23,8 @@ namespace UsabilityDynamics {
         //echo "<pre>"; print_r( $args ); echo "</pre>"; die();
       
       }
+
+    }
 
   }
 
