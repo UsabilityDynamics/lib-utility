@@ -12,7 +12,7 @@ namespace UsabilityDynamics {
 
     class Structure {
       
-      public function define( $args = array() ) {
+      public static function define( $args = array() ) {
       
         $args = wp_parse_args( $args, array(
           'types' => array(), // Custom post types
