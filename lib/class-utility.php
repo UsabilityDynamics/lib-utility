@@ -2328,6 +2328,27 @@ namespace UsabilityDynamics {
         
       }
 
+      /**
+       * Includes all PHP files from specific folder
+       *
+       * @param string $dir Directory's path
+       * @author peshkov@UD
+       * @version 0.2
+       */
+      static function load_files ( $dir = '' ) {
+        if ( !empty( $dir ) && is_dir( $dir ) ) {
+          if ( $dh = opendir( $dir ) ) {
+            while (($file = readdir($dh)) !== false) {
+              $path = trailingslashit( $dir ) . $file;
+              if( !in_array( $file, array( '.', '..' ) ) && is_file( $path ) && 'php' == pathinfo( $path, PATHINFO_EXTENSION ) ) {
+                include_once( $path );
+              }
+            }
+            closedir( $dh );
+          }
+        }
+      }
+      
     }
 
   }
