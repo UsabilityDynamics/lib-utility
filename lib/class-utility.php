@@ -633,7 +633,7 @@ namespace UsabilityDynamics {
          */
         foreach( (array) $images as $count => $url ) {
 
-          $url = sanitize_url( $url );
+          $url = esc_url_raw( $url );
 
           $_image = array(
             'source_url' => $url,
