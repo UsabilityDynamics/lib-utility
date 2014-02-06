@@ -39,7 +39,6 @@ ud.saas = ({
     }
   },
 
-
   /**
    * Establish connection with UD Driver.
    *
@@ -51,15 +50,16 @@ ud.saas = ({
   connect: function( model, args ) {
     'use strict';
     var self = this;
-    if( self.settings.log.procedurals ) { self.log( self.scope + '.connect()', arguments ); }
+    if( self.settings.log.procedurals ) {
+      self.log( self.scope + '.connect()', arguments );
+    }
 
     args = jQuery.extend( true, { 'force new connection': false, 'secure': true }, args ? args : {}, { 'instance': self.instance } );
     var url = ( args.secure ? 'https://saas.usabilitydynamics.com:443/' : 'http://saas.usabilitydynamics.com:80/' ) + ( typeof model === 'string' ? model : '' );
 
     /* Initialize Connection */
     if( typeof io !== 'object' ) {
-      jQuery( document ).trigger( 'ud::saas::update',
-        { message: 'Socket.io Not Loaded, connection not established.', args: arguments } );
+      jQuery( document ).trigger( 'ud::saas::update', { message: 'Socket.io Not Loaded, connection not established.', args: arguments } );
       return false;
     }
 
@@ -81,7 +81,9 @@ ud.saas = ({
 
       /* Monitor all Updates */
       self.on( self.id + '::update', function( data ) {
-        if( data.message ) { self.messages.push( { 'time': new Date().getTime(), 'message': data.message, 'screen': self.instance.screen } ); }
+        if( data.message ) {
+          self.messages.push( { 'time': new Date().getTime(), 'message': data.message, 'screen': self.instance.screen } );
+        }
         jQuery( document ).trigger( '' + self.id + '::update', data );
       } );
 
@@ -93,8 +95,7 @@ ud.saas = ({
 
         // Triggers to notify when an instance is authenticated and screen set
         self.on( self.id + '::update::screen_set', function( data ) {
-          jQuery( document ).trigger( '' + self.id + '::update::screen_set::' + data.screen,
-            { 'data': data, 'saas': self } );
+          jQuery( document ).trigger( '' + self.id + '::update::screen_set::' + data.screen, { 'data': data, 'saas': self } );
         } );
 
         self.on( self.id + '::update::authentication', function( data ) {
@@ -136,16 +137,17 @@ ud.saas = ({
 
   },
 
-
   /**
    * Disconnect from SaaS
-   * 
+   *
    * @author peshkov@UD
    */
   disconnect: function() {
     'use strict';
     var self = this;
-    if( self.settings.log.procedurals ) { self.log( self.scope + '.disconnect()', arguments ); }
+    if( self.settings.log.procedurals ) {
+      self.log( self.scope + '.disconnect()', arguments );
+    }
 
     if( self.socket && typeof self.socket.disconnect == 'function' ) {
       self.socket.disconnect();
@@ -153,7 +155,6 @@ ud.saas = ({
       jQuery( document ).trigger( 'ud::saas::disconnect', self );
     }
   },
-
 
   /**
    * Programmatically Execute Emit
@@ -166,7 +167,9 @@ ud.saas = ({
   emit: function( action, data ) {
     'use strict';
     var self = this;
-    if( self.settings.log.events ) { self.log( self.scope + '.emit()', arguments ); }
+    if( self.settings.log.events ) {
+      self.log( self.scope + '.emit()', arguments );
+    }
 
     if( self.id ) {
       data.session = data.session ? data.session : self.id;
@@ -174,7 +177,6 @@ ud.saas = ({
 
     self.socket.emit( action, data );
   },
-
 
   /**
    * Programmatically Execute Emit
@@ -187,14 +189,18 @@ ud.saas = ({
   on: function( action, callback ) {
     'use strict';
     var self = this;
-    if( self.settings.log.events ) { self.log( self.scope + '.on()', arguments ); }
+    if( self.settings.log.events ) {
+      self.log( self.scope + '.on()', arguments );
+    }
 
     if( self.socket ) {
       return self.socket.on( action, callback );
     }
 
     var interval = setInterval( function() {
-      if( !self.socket ) { return ud.warning( 'Socket not ready. ' + action + ' called too early. Retrying in several seconds...' ); }
+      if( !self.socket ) {
+        return ud.warning( 'Socket not ready. ' + action + ' called too early. Retrying in several seconds...' );
+      }
       self.socket.on( action, callback );
       clearInterval( interval );
     }, 2500 );
@@ -205,7 +211,6 @@ ud.saas = ({
     }, 10000 );
 
   },
-
 
   /**
    * Instance-specific emit/on handler
@@ -219,14 +224,14 @@ ud.saas = ({
   query: function( action, request_data, callback ) {
     'use strict';
     var self = this;
-    if( self.settings.log.events ) { self.log( self.scope + '.get()', arguments ); }
+    if( self.settings.log.events ) {
+      self.log( self.scope + '.get()', arguments );
+    }
 
     if( !self.connected ) {
-      ud.warning( self.scope + '.get() - Called too early. Scheduling re-try for ' + self.id + '::connected event.',
-        arguments );
+      ud.warning( self.scope + '.get() - Called too early. Scheduling re-try for ' + self.id + '::connected event.', arguments );
       jQuery( document ).one( 'ud::saas::connected', function() {
-        ud.warning( self.scope + '.get() - Calling scheduled ud.saas.query() post ' + self.id + '::connected event.',
-          arguments );
+        ud.warning( self.scope + '.get() - Calling scheduled ud.saas.query() post ' + self.id + '::connected event.', arguments );
         self.query( action, request_data, callback );
       } );
     }
@@ -241,11 +246,9 @@ ud.saas = ({
     window.ud.saas._instances[ request_data._hash ] = setTimeout( function() {
       delete window.ud.saas._instances[ request_data._hash ];
       if( typeof callback === 'function' ) {
-        callback( new Error( 'ud.saas.query() - No response received, dropping listener: ' + 'receive::' + action + '::' + request_data._hash ),
-          request_data );
+        callback( new Error( 'ud.saas.query() - No response received, dropping listener: ' + 'receive::' + action + '::' + request_data._hash ), request_data );
       } else {
-        self.log( new Error( 'ud.saas.query() - No response received, dropping listener: ' + 'receive::' + action + '::' + request_data._hash ),
-          request_data );
+        self.log( new Error( 'ud.saas.query() - No response received, dropping listener: ' + 'receive::' + action + '::' + request_data._hash ), request_data );
       }
     }, self.settings.query_timeout );
 
@@ -276,7 +279,6 @@ ud.saas = ({
 
   },
 
-
   /**
    * Internal logging function.
    *
@@ -299,7 +301,6 @@ ud.saas = ({
     return typeof arguments[0] === 'boolean' ? arguments[0] : true;
 
   },
-
 
   /**
    * Enable Global IO Data Logger

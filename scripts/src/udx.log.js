@@ -15,22 +15,17 @@ jQuery.extend( true, ud, {
   /* Slug for Default Scope */
   scope: 'ud',
 
-
   /* Global setting. Should be overwritten by child */
   developer_mode: true,
-
 
   /* Configuration of which debug messages to display, if any */
   console_options: { show_log: true },
 
-
   /* Contains i18n strings */
   strings: {},
 
-
   /* Central location for timers */
   timers: {},
-
 
   /* Utility Functions */
   utils: {
@@ -43,32 +38,54 @@ jQuery.extend( true, ud, {
      */
     type_fix: function( object, args ) {
 
-      jQuery.extend( args, { 'null': true });
+      jQuery.extend( args, { 'null': true } );
 
       try {
 
         var fix = function( value ) {
           switch( typeof value ) {
-            case 'string': switch(  value ) { case 'false': value = false; break; case 'true': value = true; break; case '': value = ( args.nullify ? null : value ); break; } break;
-            case 'number': value = parseFloat( value ); break;
-            case 'object': value = dig( value ); break;
-          } return value;
+            case 'string':
+              switch( value ) {
+                case 'false':
+                  value = false;
+                  break;
+                case 'true':
+                  value = true;
+                  break;
+                case '':
+                  value = ( args.nullify ? null : value );
+                  break;
+              }
+              break;
+            case 'number':
+              value = parseFloat( value );
+              break;
+            case 'object':
+              value = dig( value );
+              break;
+          }
+          return value;
         }
 
         var dig = function( object ) {
-          if( typeof object !== 'object' ) { return fix( object );  }
-          for( key in object ) { object[ key ] = fix( object[ key ] ); };
+          if( typeof object !== 'object' ) {
+            return fix( object );
+          }
+          for( key in object ) {
+            object[ key ] = fix( object[ key ] );
+          }
+          ;
           return object;
         }
 
-      } catch ( e ) {}
+      } catch( e ) {
+      }
 
       return dig( object );
 
     }
 
   },
-
 
   /**
    * Throw a Warning (Not Fatal Error)
@@ -85,7 +102,6 @@ jQuery.extend( true, ud, {
     }
   },
 
-
   /**
    * Internal logging function.
    *
@@ -101,7 +117,7 @@ jQuery.extend( true, ud, {
    *
    * @author potanin@UD
    */
-  log: function ( notice, type, override ) {
+  log: function( notice, type, override ) {
     var self = this;
 
     /* If notice is an error, we strip out the message, send to console, and then return the error object */
@@ -110,34 +126,55 @@ jQuery.extend( true, ud, {
       return notice;
     }
 
-    if( !window.console || ( !override && ( !self.developer_mode || !window.console ) ) || typeof notice === 'boolean' && !notice ) { return false; }
-    
+    if( !window.console || ( !override && ( !self.developer_mode || !window.console ) ) || typeof notice === 'boolean' && !notice ) {
+      return false;
+    }
+
     /* Prevent logs in IE because of issues. */
-    if( self.browser_detect( 'browser' ) == 'Explorer' ) { return false; }
+    if( self.browser_detect( 'browser' ) == 'Explorer' ) {
+      return false;
+    }
 
     self.log.console = {
       log: function( args ) {
         switch( args.type ) {
-          case 'info': return self.log.console.info( args ); break;
-          case 'error': return self.log.console.error( args ); break;
-          case 'dir': return self.log.console.error( args ); break;
-          case 'warn': return self.log.console.warn( args ); break;
-          default: return ( self.console_options && self.console_options.show_log ) ? console.log.apply( console, args.items ) : false; break;
+          case 'info':
+            return self.log.console.info( args );
+            break;
+          case 'error':
+            return self.log.console.error( args );
+            break;
+          case 'dir':
+            return self.log.console.error( args );
+            break;
+          case 'warn':
+            return self.log.console.warn( args );
+            break;
+          default:
+            return ( self.console_options && self.console_options.show_log ) ? console.log.apply( console, args.items ) : false;
+            break;
         }
       },
-      info: function( args ) { return console.info.apply( console, args.items ); },
-      error: function( args ) { return console.error.apply( console, args.items ); },
-      dir: function( args ) { return console.dir.apply( console, args.items ); },
-      warn: function( args ) { return console.warn.apply( console, args.items ); }
+      info: function( args ) {
+        return console.info.apply( console, args.items );
+      },
+      error: function( args ) {
+        return console.error.apply( console, args.items );
+      },
+      dir: function( args ) {
+        return console.dir.apply( console, args.items );
+      },
+      warn: function( args ) {
+        return console.warn.apply( console, args.items );
+      }
     }
 
-    return self.log.console.log({
+    return self.log.console.log( {
       items: [  self.scope + '::'  ].concat( jQuery.makeArray( typeof notice === 'string' && typeof type === 'object' ? arguments : [ notice ] ) ),
       type: ( typeof type === 'string' ? type : 'log' )
-    });
+    } );
 
   },
-
 
   /**
    * Add Remove Notification support.
@@ -145,7 +182,8 @@ jQuery.extend( true, ud, {
    * @author peshkov@UD
    */
   get_service: function( service, callback, args ) {
-    'use strict'; this.log( this.scope + '.get_service()', arguments );
+    'use strict';
+    this.log( this.scope + '.get_service()', arguments );
 
     if( typeof callback !== 'function' ) {
       return false;
@@ -155,10 +193,9 @@ jQuery.extend( true, ud, {
 
     this.ajax( 'get_api_service', { service: service, args: args }, function( response ) {
       callback( response );
-    });
+    } );
 
   },
-
 
   /**
    * WPP AJAX Handler
@@ -167,7 +204,8 @@ jQuery.extend( true, ud, {
    *
    */
   ajax: function( this_action, ajax_args, callback, args ) {
-    'use strict'; /* this.log( this.scope + '.ajax()' , arguments ); */
+    'use strict';
+    /* this.log( this.scope + '.ajax()' , arguments ); */
 
     if( !ajaxurl ) {
       return false;
@@ -222,7 +260,7 @@ jQuery.extend( true, ud, {
       type: 'POST',
       async: true,
       timeout: ( ( typeof self.server === 'object' ? self.server.max_execution_time : 30 ) - 10 ) * 1000,
-      beforeSend: function ( xhr ) {
+      beforeSend: function( xhr ) {
         jQuery( document ).trigger( self.scope + '.ajax.beforeSend' );
         xhr.overrideMimeType( 'application/json; charset=utf-8' );
       },
@@ -235,7 +273,6 @@ jQuery.extend( true, ud, {
 
   },
 
-
   /**
    * Applies filter for the passed object
    *
@@ -244,7 +281,7 @@ jQuery.extend( true, ud, {
    * @author peshkov@UD
    */
   apply_filter: function( name, obj ) {
-  
+
     /* Filter's name and callback are required */
     if( typeof obj === 'undefined' || typeof name === 'undefined' || typeof name !== 'string' ) return obj;
     /* jQuery must be inititialized */
@@ -255,14 +292,13 @@ jQuery.extend( true, ud, {
     jQuery.each( window.__ud_filters[ name ], function( i, e ) {
       if( typeof e === 'function' ) {
         obj = e( obj );
-      } else if ( typeof e === 'object' ) {
+      } else if( typeof e === 'object' ) {
         if( typeof obj !== 'object' ) return false;
         obj = jQuery.extend( true, obj, e );
       }
     } );
     return obj;
   },
-
 
   /**
    * Adds filter to filters array.
@@ -280,16 +316,14 @@ jQuery.extend( true, ud, {
     window.__ud_filters[ name ].push( callback );
   },
 
-
   /**
    * Basic URL Validation
    *
    */
   validate_url: function( string ) {
-    var validation_regex = new RegExp( "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
+    var validation_regex = new RegExp( "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$" );
     return validation_regex.test( string );
   },
-
 
   /**
    * Creates slug from the string.
@@ -299,50 +333,47 @@ jQuery.extend( true, ud, {
    */
   create_slug: function( slug ) {
     if( typeof slug !== 'string' ) return false;
-    slug = slug.replace(/[^a-zA-Z0-9_\s]/g,"");
+    slug = slug.replace( /[^a-zA-Z0-9_\s]/g, "" );
     slug = slug.toLowerCase();
-    slug = slug.replace(/\s/g,'_');
+    slug = slug.replace( /\s/g, '_' );
     return slug;
   },
-  
+
   /**
    * Detects client's browser
-   * 
+   *
    * Get Browser name: self.browser_detect( 'browser' )
    * Get Browser version: self.browser_detect( 'version' )
    * Get OS name: self.browser_detect( 'OS' )
-   * 
+   *
    * @author peshkov@UD
    */
   browser_detect: function( query ) {
-    if ( typeof query === 'undefined' ) return false;
-    
-    if ( typeof window._ud_browser_detect === 'undefined' ) {
+    if( typeof query === 'undefined' ) return false;
+
+    if( typeof window._ud_browser_detect === 'undefined' ) {
       window._ud_browser_detect = {
-        init: function () {
-          this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
-          this.version = this.searchVersion(navigator.userAgent)
-            || this.searchVersion(navigator.appVersion)
-            || "an unknown version";
-          this.OS = this.searchString(this.dataOS) || "an unknown OS";
+        init: function() {
+          this.browser = this.searchString( this.dataBrowser ) || "An unknown browser";
+          this.version = this.searchVersion( navigator.userAgent ) || this.searchVersion( navigator.appVersion ) || "an unknown version";
+          this.OS = this.searchString( this.dataOS ) || "an unknown OS";
         },
-        searchString: function (data) {
-          for (var i=0;i<data.length;i++)	{
+        searchString: function( data ) {
+          for( var i = 0; i < data.length; i++ ) {
             var dataString = data[i].string;
             var dataProp = data[i].prop;
             this.versionSearchString = data[i].versionSearch || data[i].identity;
-            if (dataString) {
-              if (dataString.indexOf(data[i].subString) != -1)
+            if( dataString ) {
+              if( dataString.indexOf( data[i].subString ) != -1 )
                 return data[i].identity;
-              }
-            else if (dataProp)
+            } else if( dataProp )
               return data[i].identity;
           }
         },
-        searchVersion: function (dataString) {
-          var index = dataString.indexOf(this.versionSearchString);
-          if (index == -1) return;
-          return parseFloat(dataString.substring(index+this.versionSearchString.length+1));
+        searchVersion: function( dataString ) {
+          var index = dataString.indexOf( this.versionSearchString );
+          if( index == -1 ) return;
+          return parseFloat( dataString.substring( index + this.versionSearchString.length + 1 ) );
         },
         dataBrowser: [
           { string: navigator.userAgent, subString: "Chrome", identity: "Chrome" },
@@ -358,7 +389,7 @@ jQuery.extend( true, ud, {
           { string: navigator.userAgent, subString: "Gecko", identity: "Mozilla", versionSearch: "rv" },
           { string: navigator.userAgent, subString: "Mozilla", identity: "Netscape", versionSearch: "Mozilla" }
         ],
-        dataOS : [
+        dataOS: [
           { string: navigator.platform, subString: "Win", identity: "Windows" },
           { string: navigator.platform, subString: "Mac", identity: "Mac" },
           { string: navigator.userAgent, subString: "iPhone", identity: "iPhone/iPod" },
@@ -370,8 +401,7 @@ jQuery.extend( true, ud, {
     return typeof window._ud_browser_detect[ query ] !== 'undefined' ? window._ud_browser_detect[ query ] : false;
   }
 
-});
-
+} );
 
 /**
  * Adds indexOf if it doesn't exist
@@ -379,9 +409,11 @@ jQuery.extend( true, ud, {
  *
  */
 if( !Array.prototype.indexOf ) {
-  Array.prototype.indexOf = function(obj, start) {
-    for (var i = (start || 0), j = this.length; i < j; i++) {
-      if (this[i] === obj) { return i; }
+  Array.prototype.indexOf = function( obj, start ) {
+    for( var i = (start || 0), j = this.length; i < j; i++ ) {
+      if( this[i] === obj ) {
+        return i;
+      }
     }
     return -1;
   }
