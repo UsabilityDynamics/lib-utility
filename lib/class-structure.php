@@ -16,7 +16,13 @@ namespace UsabilityDynamics {
        *
        *
        */
-      static private $args;
+      static private $args = array();
+      
+      /**
+       *
+       *
+       */
+      static private $structure = array();
       
       /**
        *
@@ -30,8 +36,16 @@ namespace UsabilityDynamics {
           'taxonomies' => array(), // Taxonomies
         ) );
         
+        $structure = array();
         
-        foreach( (array) self::$args[ 'types' ] as $object_type => $type ) { 
+        foreach( (array) self::$args[ 'types' ] as $object_type => $type ) {
+        
+          $object_type = sanitize_key( $object_type );
+        
+          self::$structure[ $object_type ] = array(
+            'meta' => array(),
+            'terms' => array(),
+          );
           
           // STEP 1. Register post_type
           
@@ -61,6 +75,7 @@ namespace UsabilityDynamics {
             
             register_taxonomy_for_object_type( $taxonomy, $object_type );
             
+            array_push( $structure[ $object_type ][ 'terms' ], $taxonomy );
           }
           
           // STEP 3. Set meta fields and meta boxes
@@ -91,8 +106,14 @@ namespace UsabilityDynamics {
           
         }
         
-        //die();
-        //echo "<pre>"; print_r( $args ); echo "</pre>"; die();
+        // STEP 4. reset static vars and return structure data.
+        
+        $structure = self::$structure;
+        
+        self::$args = array();
+        self::$structure = array();
+        
+        return $structure;
       }
       
       /**
@@ -119,6 +140,7 @@ namespace UsabilityDynamics {
         
         $fields = array();
         foreach( $data[ 'fields' ] as $field ) {
+          array_push( self::$structure[ $object_type ][ 'meta' ], $field );
           $fields[] = self::_prepare_metafield( $field );
         }
         $data[ 'fields' ] = $fields;
