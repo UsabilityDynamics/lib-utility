@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Analytics Example</title>
+    <link rel="stylesheet" type="text/css" href="styles/site.css"/>
+    <script data-main="scripts/app" data-debug="true" src="//cdn.udx.io/udx.requires.js"></script>
+  </head>
+  <body>
+
+    <section>
+      <article><p>Analytics Testing</p></article>
+    </section>
+
+    <section id="tickets" class="">
+      <iframe src="//www.eventbrite.com/tickets-external?eid=9467005067&ref=etckt"></iframe>
+      <a href="//www.eventbrite.com/e/ume-2014-tickets-9467005067" >Buy Tickets</a>
+    </section>
+
+    <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-43694229-3']);
+
+  //  _gaq.push(['_setDomainName', 'udx.io']);
+    _gaq.push(
+      ['_setDomainName', 'none'],
+      ['_setCustomVar', 1, 'Section', 'Life & Style', 3]
+
+    );
+
+    _gaq.push(['_trackEvent', 'Videos', 'Play', 'Gone With the Wind']);
+    _gaq.push(['_trackEvent', 'Videos', 'Pause', 'Gone With the Wind']);
+
+    _gaq.push(['_trackTiming', 'jQuery', 'Load Library', 12322, 'Google CDN']);
+    _gaq.push(['_setAllowLinker', true]);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
+
+    <script>
+
+  (function( i, s, o, g, r, a, m ) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function() {
+      (i[r].q = i[r].q || []).push( arguments )
+    }, i[r].l = 1 * new Date();
+    a = s.createElement( o ), m = s.getElementsByTagName( o )[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore( a, m )
+  })( window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga' );
+
+  ga('create', 'UA-43694229-4', 'cdn.udx.io');
+  ga( 'send', 'pageview' );
+
+  window.setInterval( function() {
+    console.log( 'event sent' );
+    ga('create', 'UA-XXXX-Y', {
+      'cookieDomain': 'none'
+    });
+
+
+    ga('send', 'event', 'category', 'action', {'page': '/my-new-page'});
+
+    ga( 'send', {
+      'hitType': 'event',          // Required.
+      'eventCategory': 'button',   // Required.
+      'eventAction': 'click',      // Required.
+      'eventLabel': 'nav buttons',
+      'eventValue': 4
+    } );
+
+  }, 10000 );
+
+  ga(function(tracker) {
+
+    var linker = new window.gaplugins.Linker(tracker);
+    var output = linker.decorate('//www.eventbrite.com');
+  console.log( '', output );
+    ga('require', 'linker');
+
+  // Define which domains to autoLink.
+    ga('linker:autoLink', ['eventbrite.com', 'www.eventbrite.com']);
+
+    var clientId = tracker.get('clientId');
+    console.log( 'clientId', clientId );
+  });
+
+
+  </script>
+
+  </body>
+</html>

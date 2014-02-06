@@ -8,16 +8,5 @@ require( [ 'udx.utility' ], function onLoaded() {
   // Load CSS
   require.loadStyle( 'styles/app.css' );
 
-  if( utility.isVisible( 'tablet' ) ) {
-    console.log( 'tablet visible' );
-  }
-
-  if( utility.isVisible( 'mobile' ) ) {
-    console.log( 'mobile visible' );
-  }
-
-  if( utility.isVisible( 'desktop' ) ) {
-    console.log( 'desktop visible' );
-  }
 
 });
