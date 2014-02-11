@@ -1012,7 +1012,7 @@ namespace UsabilityDynamics {
        * @author peshkov@UD
        * @since 0.2.5
        */
-      function get_image_link_with_custom_size( $attachment_id, $width, $height ) {
+      static function get_image_link_with_custom_size( $attachment_id, $width, $height ) {
         global $wpdb;
 
         // Sanitize
@@ -2335,7 +2335,7 @@ namespace UsabilityDynamics {
        * @author peshkov@UD
        * @version 0.2
        */
-      static function load_files ( $dir = '' ) {
+      static public function load_files ( $dir = '' ) {
         if ( !empty( $dir ) && is_dir( $dir ) ) {
           if ( $dh = opendir( $dir ) ) {
             while (($file = readdir($dh)) !== false) {
