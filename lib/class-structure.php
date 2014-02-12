@@ -51,6 +51,7 @@ namespace UsabilityDynamics {
           
           // Register Post Type
           $data = ( isset( $type[ 'data' ] ) && is_array( $type[ 'data' ] ) ) ? $type[ 'data' ] : array();
+
           register_post_type( $object_type, self::_prepare_post_type( $object_type, $data ) );
           
           // Define post type's taxonomies
@@ -74,8 +75,11 @@ namespace UsabilityDynamics {
             }
             
             register_taxonomy_for_object_type( $taxonomy, $object_type );
-            
-            array_push( $structure[ $object_type ][ 'terms' ], $taxonomy );
+
+            if( isset( $structure[ $object_type ] ) && isset( $structure[ $object_type ]['terms' ] ) && is_array( $structure[ $object_type ]['terms' ] ) ) {
+              array_push( $structure[ $object_type ][ 'terms' ], $taxonomy );
+            }
+
           }
           
           // STEP 3. Set meta fields and meta boxes
@@ -96,9 +100,10 @@ namespace UsabilityDynamics {
           }
           
           $metaboxes = ( isset( $type[ 'meta' ] ) && is_array( $type[ 'meta' ] ) ) ? $type[ 'meta' ] : array();
+
           foreach( $metaboxes as $key => $data ) {
             $data = self::_prepare_metabox( $key, $object_type, $data );
-            
+
             if( $data ) {
               new \RW_Meta_Box( $data );
             }
@@ -132,19 +137,20 @@ namespace UsabilityDynamics {
           'autosave' => false,
           'fields' => array(),
         ) );
-        
+
         // There is no sense to init empty metabox
         if( !is_array( $data[ 'fields' ] ) || empty( $data[ 'fields' ] ) ) {
           return false;
         }
-        
+
         $fields = array();
         foreach( $data[ 'fields' ] as $field ) {
           array_push( self::$structure[ $object_type ][ 'meta' ], $field );
           $fields[] = self::_prepare_metafield( $field );
         }
+
         $data[ 'fields' ] = $fields;
-        
+
         return $data;
       }
       
