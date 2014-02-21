@@ -115,7 +115,7 @@ namespace UsabilityDynamics {
        * Parses Query.
        * HACK. The current logic solves the issue of max_input_vars in the case if query is huge.
        * For example, user can set more than 150 property attributes (WP-Property) where every attribute has own set of params.
-       * 
+       *
        * @see parse_str() Default PHP function
        * @version 1.0
        * @author peshkov@UD
@@ -133,7 +133,7 @@ namespace UsabilityDynamics {
         }
         return $data;
       }
-      
+
       /**
        * Deep Conversion
        *
@@ -1038,7 +1038,7 @@ namespace UsabilityDynamics {
         // If an image of such size was not found, we can create one.
         if( $needs_resize ) {
           $attached_file = get_attached_file( $attachment_id );
-          $resized       = image_make_intermediate_size( $attached_file, $width, $height, true );
+          $resized       = image_make_intermediate_size( $attached_file, $width, $height );
           if( is_wp_error( $resized ) ) {
             return $resized;
           }
@@ -2282,12 +2282,12 @@ namespace UsabilityDynamics {
         if ( !is_dir( $path ) ) {
           return null;
         }
-        
+
         $_widgets = wp_cache_get( 'widgets', 'usabilitydynamics' );
         if( !is_array( $_widgets ) ) {
           $_widgets = array();
         }
-        
+
         if( $cache && !empty( $_widgets[ $path ] ) && is_array( $_widgets[ $path ] ) ) {
           foreach( $_widgets[ $path ] as $_widget ) {
             include_once( $path . "/" . $_widget[ 'file' ] );
@@ -2295,9 +2295,9 @@ namespace UsabilityDynamics {
           }
           return null;
         }
-        
+
         $_widgets[ $path ] = array();
-        
+
         if ( $dir = @opendir( $path ) ) {
           $headers = array(
             'name' => 'Name',
@@ -2323,9 +2323,9 @@ namespace UsabilityDynamics {
             }
           }
         }
-        
+
         wp_cache_set( 'widgets', $_widgets, 'usabilitydynamics' );
-        
+
       }
 
       /**
@@ -2348,7 +2348,7 @@ namespace UsabilityDynamics {
           }
         }
       }
-      
+
       /**
        * Localization Functionality.
        *
@@ -2356,8 +2356,8 @@ namespace UsabilityDynamics {
        * Helpful for localization of data which is stored in JSON files ( see /schemas )
        *
        * Usage:
-       * 
-       * add_filter( 'ud::schema::localization', create_function( '$locals', 'return array_merge( array( 'value_for_translating' => __( 'Blah Blah' ) ), $locals )') );       
+       *
+       * add_filter( 'ud::schema::localization', create_function( '$locals', 'return array_merge( array( 'value_for_translating' => __( 'Blah Blah' ) ), $locals )') );
        *
        * $result = self::l10n_localize (array(
        *  'key' => 'l10n.value_for_translating'
@@ -2398,7 +2398,7 @@ namespace UsabilityDynamics {
 
         return $data;
       }
-      
+
     }
 
   }
