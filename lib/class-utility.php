@@ -1563,59 +1563,57 @@ namespace UsabilityDynamics {
        * Note: load_template() extracts $wp_query->query_vars into the loaded template, so to add any global variables to the template, add them to
        * $wp_query->query_vars prior to calling this function.
        *
-       * @name array $name List of requested templates. Will be return the first found
-       * @path array $path [optional]. Method tries to find template in theme, but also it can be found in given list of pathes.
+       * @param mixed $name List of requested templates. Will be return the first found
+       * @param array $path [optional]. Method tries to find template in theme, but also it can be found in given list of pathes.
+       * @param array $opts [optional]. Set of additional params: 
+       *   - string $instance. Template can depend on instance. For example: facebook, PDF, etc. Uses filter: ud::template_part::{instance}
+       *   - boolean $load. if true, rendered HTML will be returned, in other case, only found template's path.
        * @load boolean [optional]. If true and a template is found, the template will be loaded via load_template() and returned as a string
        * @author peshkov@UD
-       * @version 1.0
+       * @version 1.1
        */
-      static public function get_template_part( $templates, $path = array(), $load = false ) {
+      static public function get_template_part( $name, $path = array(), $opts = array() ) {
+        $name = (array)$name;
+        $template = "";
 
-        $_paths = array_merge( array(
-          STYLESHEETPATH,
-          TEMPLATEPATH
-        ), (array) $path );
+        /**
+         * Set default instance.
+         * Template can depend on instance. For example: facebook, PDF, etc.
+         */
+        $instance = apply_filters( "ud::current_instance", "default" );
 
-        $_count = 0;
+        $opts = wp_parse_args( $opts, array(
+          'instance' => $instance,
+          'load' => false,
+        ) );
+        
+        //** Allows to add/change templates storage directory. */
+        $path = apply_filters( "ud::template_part::path", $path, $name, $opts );
 
-        foreach( array_unique( (array) $templates ) as $_single ) {
-
-          if( !strpos( $_single, '.php' ) ) {
-            $_single = $_single . '.php';
-          }
-
-          foreach( (array) $_paths as $_path ) {
-            $_count++;
-
-            if( file_exists( trailingslashit( $_path ) . $_single ) ) {
-              $_file_path = trailingslashit( $_path ) . $_single;
-              break;
+        foreach ( $name as $n ) {
+          $n = "{$n}.php";
+          $template = locate_template( $n, false );
+          if ( empty( $template ) && !empty( $path ) ) {
+            foreach ( (array)$path as $p ) {
+              if ( file_exists( $p . "/" . $n ) ) {
+                $template = $p . "/" . $n;
+                break( 2 );
+              }
             }
-
           }
-
-          if( !empty( $_file_path ) ) {
-            break;
-          }
-
+          if ( !empty( $template ) ) break;
         }
 
-        //** If no match, return WP_Error object (*/
-        if( !$_file_path ) {
-          return new WP_Error( 'error', __( 'No template found.' ) );
-        }
-
+        $template = apply_filters( "ud::template_part::{$opts['instance']}", $template, array( 'name' => $name, 'path' => $path, 'opts' => $opts ) );
+        
         //** If match and load was requested, get template and return */
-        if( $_file_path && $load ) {
+        if( !empty( $template ) && $opts[ 'load' ] == true ) {
           ob_start();
-          load_template( $_file_path, false );
-          $template = ob_get_clean();
-
-          return $template;
+          load_template( $template, false );
+          return ob_get_clean();
         }
 
-        //** By default, if template is found, return the path URL */
-        return $_file_path;
+        return !empty( $template ) ? $template : false;
 
       }
 
