@@ -1618,59 +1618,6 @@ namespace UsabilityDynamics {
       }
 
       /**
-       * Determine if any requested template exists and return path to it.
-       *
-       * Migrated from ud_api.php.. - potanin@UD
-       *
-       * @todo Merge with x_get_template_part() to support $slug and $name, as well as $path.
-       *
-       * @param array $name
-       * @param array $path
-       * @param array $opts
-       *
-       * @internal param array $name List of requested templates. Will be return the first found
-       * @return bool|mixed|void
-       * @path array $path [optional]. Method tries to find template in theme, but also it can be found in given list of pathes.
-       * @author peshkov@UD
-       * @version 1.0
-       */
-      static public function _get_template_part( $name, $path = array(), $opts = array() ) {
-
-        $name     = (array) $name;
-        $template = "";
-
-        /**
-         * Set default instance.
-         * Template can depend on instance. For example: facebook, PDF, etc.
-         */
-        $instance = apply_filters( "ud::current_instance", "default" );
-
-        $opts = wp_parse_args( $opts, array(
-          'instance' => $instance,
-        ) );
-
-        foreach( $name as $n ) {
-          $n        = "{$n}.php";
-          $template = locate_template( $n, false );
-          if( empty( $template ) && !empty( $path ) ) {
-            foreach( (array) $path as $p ) {
-              if( file_exists( $p . "/" . $n ) ) {
-                $template = $p . "/" . $n;
-                break( 2 );
-              }
-            }
-          }
-          if( !empty( $template ) ) break;
-        }
-
-        $template = apply_filters( "ud::template_part::{$opts['instance']}", $template, array( 'name' => $name, 'path' => $path, 'opts' => $opts ) );
-
-        WPP_F::console_log( $template, $instance );
-
-        return !empty( $template ) ? $template : false;
-      }
-
-      /**
        * The goal of function is going through specific filters and return (or print) classes.
        * This function should not be called directly.
        * Every ud plugin/theme should have own short function ( wrapper ) for calling it. E.g., see: wpp_css().
