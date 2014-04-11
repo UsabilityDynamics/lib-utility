@@ -60,7 +60,7 @@ namespace UsabilityDynamics {
             'category',
           );
           
-          // STEP 2. Register taxonomy
+          // STEP 2. Register taxonomy ( and Taxonomy's Post Type if theme supports 'extended-taxonomies' feature )
           
           // Initialize taxonomies if they don't exist and assign them to the current post type
           foreach( $taxonomies as $taxonomy ) {
@@ -75,6 +75,21 @@ namespace UsabilityDynamics {
             }
             
             register_taxonomy_for_object_type( $taxonomy, $object_type );
+            
+            //** Add custom post type for our taxonomy if theme supports extended-taxonomies */
+            $taxonomy_post_type = '_tp_' . $taxonomy;
+            if( current_theme_supports( 'extended-taxonomies' ) && !post_type_exists( $taxonomy_post_type ) ) {
+              register_post_type( $taxonomy_post_type, array(
+                'label' => $data[ 'label' ],
+                'public' => false,
+                'rewrite' => false,
+                'labels' => array(
+                  'name' => $data[ 'label' ],
+                  'edit_item' => 'Edit Term: ' . $data[ 'label' ]
+                ),
+                'supports' => array( 'title', 'editor' ),
+              ));
+            }
 
             if( isset( $structure[ $object_type ] ) && isset( $structure[ $object_type ]['terms' ] ) && is_array( $structure[ $object_type ]['terms' ] ) ) {
               array_push( $structure[ $object_type ][ 'terms' ], $taxonomy );
