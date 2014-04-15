@@ -127,8 +127,10 @@ namespace UsabilityDynamics {
         }
         
         // STEP 4. reset static vars and return structure data.
-        
-        $structure = self::$structure;
+        $structure = array(
+          'post_types' => self::$structure,
+          'schema' => self::$args,
+        );
         
         self::$args = array();
         self::$structure = array();

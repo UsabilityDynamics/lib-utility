@@ -72,7 +72,7 @@ namespace UsabilityDynamics {
        *
        * @author potanin@UD
        */
-      static private function get_post_for_extended_term( $term_id = false, $taxonomy = false ) {
+      static public function get_post_for_extended_term( $term_id = false, $taxonomy = false ) {
         global $wpdb;
 
         if( !$term_id ) {
