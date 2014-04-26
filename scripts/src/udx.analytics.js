@@ -2,6 +2,7 @@
  * Event Analytics
  *
  *  data-event="category/action"
+ *  data-track
  *
  * http://www.google-analytics.com/analytics.js
  *
