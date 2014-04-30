@@ -10,10 +10,10 @@
  * @returns {Object}
  */
 define( 'udx.analytics', [ '//www.google-analytics.com/analytics.js' ], function analyticsModule() {
-  console.debug( 'udx.analytics', 'analyticsModule' );
+  // console.debug( 'udx.analytics', 'analyticsModule' );
 
   function Analytics( settings ) {
-    console.debug( 'udx.analytics', 'Analytics()', settings );
+    // console.debug( 'udx.analytics', 'Analytics()', settings );
 
     if( 'string' === typeof settings ) {
       settings = { id: settings }
@@ -48,6 +48,12 @@ define( 'udx.analytics', [ '//www.google-analytics.com/analytics.js' ], function
    *
    */
   Object.defineProperties( Analytics.prototype, {
+    ga: {
+      value: ga,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    },
     autoLink: {
       value: function autoLink() {
 
@@ -83,7 +89,7 @@ define( 'udx.analytics', [ '//www.google-analytics.com/analytics.js' ], function
        * @param eventValue
        */
       value: function emitEvent( eventCategory, eventAction, eventLabel, eventValue ) {
-        console.debug( 'udx.analytics', 'emitEvent' );
+        // console.debug( 'udx.analytics', 'emitEvent' );
 
         ga( 'send', 'event', {
           eventCategory: eventCategory,
@@ -127,7 +133,7 @@ define( 'udx.analytics', [ '//www.google-analytics.com/analytics.js' ], function
        * @param value
        */
       value: function set( key, value ) {
-        console.debug( 'udx.analytics', 'set' );
+        // console.debug( 'udx.analytics', 'set' );
 
         ga('set', key, value );
 
@@ -154,7 +160,7 @@ define( 'udx.analytics', [ '//www.google-analytics.com/analytics.js' ], function
        *
        */
       value: function sendHit( hitType, page ) {
-        console.debug( 'udx.analytics', 'sendHit' );
+        // console.debug( 'udx.analytics', 'sendHit' );
 
         ga( 'send', {
           hitType: hitType || 'pageview',
@@ -178,25 +184,8 @@ define( 'udx.analytics', [ '//www.google-analytics.com/analytics.js' ], function
        * @param title
        */
       value: function setView( page, title ) {
-        console.debug( 'udx.analytics', 'setView' );
-
-        ga( 'send', 'screenview', {
-          'appName': 'myAppName',
-          'appId': 'myAppId',
-          'appVersion': '1.0',
-          'appInstallerId': 'myInstallerId'
-          //'screenName': 'my overridden screen name'
-        });
-
-        return this;
-
-        var type = 'pageview';
-
-        ga( 'pageview', type, {
-          page: page || document.location.pathname,
-          title: title || document.title
-        });
-
+        // console.debug( 'udx.analytics', 'setView' );
+        ga( 'send', 'pageview' );
         return this;
 
       },
