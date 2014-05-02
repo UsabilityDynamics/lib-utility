@@ -2,7 +2,7 @@
  * ElasticSearch Analysis Client
  *
  */
-define( 'analysis.client', [ 'analysis.visualizer' ], function() {
+define( 'analysis.client', [ 'jquery.elasticsearch', 'analysis.visualizer' ], function() {
   console.debug( 'analysis.client', 'loaded' );
 
   var options = {};
@@ -20,7 +20,7 @@ define( 'analysis.client', [ 'analysis.visualizer' ], function() {
   /**
    * Create Client Instance
    *
-   * @returns {jQuery.es.Client}
+   * @returns {tinylr.Client}
    */
   function createClient( host, index, type ) {
 
