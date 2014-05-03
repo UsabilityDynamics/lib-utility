@@ -1,6 +1,7 @@
 /**
  * ElasticSearch Analysis Client
  *
+ * @todo Switch to vanilla version of elasticsearch to avoid dependency and resolve shim issue.
  */
 define( 'analysis.client', [ 'jquery.elasticsearch', 'analysis.visualizer' ], function() {
   console.debug( 'analysis.client', 'loaded' );
