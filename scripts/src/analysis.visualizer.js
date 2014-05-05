@@ -1,6 +1,8 @@
 /**
  *
  *
+ * @todo Consider adding udx.fleck for fixing strings for view.
+ *
  * require( 'analysis.visualizer' )._cached
  *
  */
@@ -25,7 +27,7 @@ define( 'analysis.visualizer', [ 'http://www.google.com/jsapi/' ], function() {
 
   /**
    * Get Client Location from Google JS-API
-   * 
+   *
    * @returns {*}
    */
   function clientLocation() {
@@ -35,7 +37,7 @@ define( 'analysis.visualizer', [ 'http://www.google.com/jsapi/' ], function() {
 
   /**
    * Convert  Term to Label
-   * 
+   *
    * @param key
    * @returns {*}
    */
