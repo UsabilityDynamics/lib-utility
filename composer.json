@@ -14,7 +14,7 @@
     }
   ],
   "require": {
-    "UsabilityDynamics/wp-meta-box": "master"
+    "UsabilityDynamics/lib-meta-box": "master"
   },
   "autoload": {
     "classmap": [ "lib" ]
