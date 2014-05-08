@@ -1012,7 +1012,7 @@ namespace UsabilityDynamics {
        * @author peshkov@UD
        * @since 0.2.5
        */
-      static function get_image_link_with_custom_size( $attachment_id, $width, $height ) {
+      static function get_image_link_with_custom_size( $attachment_id, $width, $height, $crop = false ) {
         global $wpdb;
 
         // Sanitize
@@ -1038,7 +1038,7 @@ namespace UsabilityDynamics {
         // If an image of such size was not found, we can create one.
         if( $needs_resize ) {
           $attached_file = get_attached_file( $attachment_id );
-          $resized       = image_make_intermediate_size( $attached_file, $width, $height );
+          $resized       = image_make_intermediate_size( $attached_file, $width, $height, $crop );
           if( is_wp_error( $resized ) ) {
             return $resized;
           }
