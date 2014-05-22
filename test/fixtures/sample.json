@@ -1,5 +1,6 @@
 {
   "anagrafica": {
+    "@version" : 1.1,
     "testata": {
       "nomemercato": {
         "-id": "007",

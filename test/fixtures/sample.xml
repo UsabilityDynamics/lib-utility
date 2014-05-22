@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--Anagrafica del clienti del mercato-->
 <anagrafica>
+  <version>1.1</version>
   <testata>
     <nomemercato id="007">Mercato di test</nomemercato>
     <data>Giovedi 18 dicembre 2003 16.05.29</data>

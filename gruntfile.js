@@ -19,7 +19,7 @@ module.exports = function buildLibrary( grunt ) {
       },
       options: {
         bin: 'phpunit',
-        bootstrap: 'vendor/autoload.php',
+        bootstrap: 'test/php/bootstrap.php',
         colors: true
       }
     },
