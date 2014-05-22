@@ -15,11 +15,11 @@ module.exports = function buildLibrary( grunt ) {
     // PHP Unit Tests.
     phpunit: {
       classes: {
-        dir: 'test/php/'
+        dir: 'test/php/*.php'
       },
       options: {
         bin: 'phpunit',
-        bootstrap: 'test/php/bootstrap.php',
+        bootstrap: 'vendor/autoload.php',
         colors: true
       }
     },
