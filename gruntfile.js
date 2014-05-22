@@ -204,7 +204,13 @@ module.exports = function buildLibrary( grunt ) {
   grunt.loadNpmTasks( 'grunt-phpunit' );
 
   // Register NPM Tasks.
-  grunt.registerTask( 'default',        [ 'markdown', 'less' , 'yuidoc', 'uglify' ] );
+  grunt.registerTask( 'default',        [ 'build' ] );
+
+  // Installation.
+  grunt.registerTask( 'install',        [ 'build' ] );
+
+  // Build Task.
+  grunt.registerTask( 'build',          [ 'markdown', 'less' , 'yuidoc', 'uglify' ] );
 
   // Run Unit Tests.
   grunt.registerTask( 'test',           [ 'phpunit', 'mochacli:all', 'mochacov:all' ] );
