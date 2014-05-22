@@ -66,21 +66,15 @@ module.exports = function buildLibrary( grunt ) {
         debounceDelay: 500
       },
       php: {
-        files: [
-          'lib/*.php'
-        ],
+        files: [ 'lib/class-*.php' ],
         tasks: [ 'phpunit' ]
       },
       less: {
-        files: [
-          'styles/src/*.*'
-        ],
+        files: [ 'styles/src/*.*' ],
         tasks: [ 'less' ]
       },
       js: {
-        files: [
-          'scripts/src/*.*'
-        ],
+        files: [ 'scripts/src/*.*' ],
         tasks: [ 'uglify' ]
       }
     },
