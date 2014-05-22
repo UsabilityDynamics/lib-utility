@@ -5,6 +5,7 @@
     "process",
     "job"
   ],
+  "version": "0.3.2",
   "type": "library",
   "minimum-stability": "dev",
   "repositories": [
@@ -13,9 +14,8 @@
       "url": "http://repository.usabilitydynamics.com"
     }
   ],
-  "require": {
-    "UsabilityDynamics/lib-meta-box": "master"
-  },
+  "require": {},
+  "require-dev": {},
   "autoload": {
     "classmap": [ "lib" ]
   },
@@ -40,14 +40,10 @@
     }
   ],
   "extra": {
+    "installer-name": "lib-utility",
     "component": {
-      "scripts": [
-        "scripts/udx.utility.js",
-        "scripts/udx.utility.job.js",
-        "scripts/udx.utility.process.js",
-        "scripts/udx.utility.facebook.like.js",
-        "scripts/udx.utility.md5.js"
-      ]
+      "name": "utility",
+      "scripts": [ "scripts/*.js" ]
     }
   },
   "license": "MIT"

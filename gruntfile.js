@@ -5,20 +5,32 @@
  * @version 1.1.2
  * @param grunt
  */
-module.exports = function build( grunt ) {
+module.exports = function buildLibrary( grunt ) {
 
-  grunt.initConfig( {
+  grunt.initConfig({
 
     // Read Composer File.
-    pkg: grunt.file.readJSON( 'composer.json' ),
+    package: grunt.file.readJSON( 'composer.json' ),
+
+    // PHP Unit Tests.
+    phpunit: {
+      classes: {
+        dir: 'test/php/'
+      },
+      options: {
+        bin: 'phpunit',
+        bootstrap: 'vendor/autoload.php',
+        colors: true
+      }
+    },
 
     // Generate Documentation.
     yuidoc: {
       compile: {
-        name: '<%= pkg.name %>',
-        description: '<%= pkg.description %>',
-        version: '<%= pkg.version %>',
-        url: '<%= pkg.homepage %>',
+        name: '<%= package.name %>',
+        description: '<%= package.description %>',
+        version: '<%= package.version %>',
+        url: '<%= package.homepage %>',
         options: {
           paths: [ 'lib', 'scripts' ],
           outdir: 'static/codex/'
@@ -52,6 +64,12 @@ module.exports = function build( grunt ) {
       options: {
         interval: 100,
         debounceDelay: 500
+      },
+      php: {
+        files: [
+          'lib/*.php'
+        ],
+        tasks: [ 'phpunit' ]
       },
       less: {
         files: [
@@ -183,14 +201,18 @@ module.exports = function build( grunt ) {
   grunt.loadNpmTasks( 'grunt-shell' );
   grunt.loadNpmTasks( 'grunt-mocha-cli' );
   grunt.loadNpmTasks( 'grunt-mocha-cov' );
+  grunt.loadNpmTasks( 'grunt-phpunit' );
 
   // Register NPM Tasks.
-  grunt.registerTask( 'default', [ 'markdown', 'less' , 'yuidoc', 'uglify' ] );
+  grunt.registerTask( 'default',        [ 'markdown', 'less' , 'yuidoc', 'uglify' ] );
+
+  // Run Unit Tests.
+  grunt.registerTask( 'test',           [ 'phpunit', 'mochacli:all', 'mochacov:all' ] );
 
   // Build Distribution.
-  grunt.registerTask( 'distribution', [ 'mochacli:all', 'mochacov:all', 'clean:all', 'markdown', 'less:production', 'uglify:production' ] );
+  grunt.registerTask( 'distribution',   [ 'mochacli:all', 'mochacov:all', 'clean:all', 'markdown', 'less:production', 'uglify:production' ] );
 
   // Update Environment.
-  grunt.registerTask( 'update', [ 'clean:update', 'shell:update' ] );
+  grunt.registerTask( 'update',         [ 'clean:update', 'shell:update' ] );
 
 };
