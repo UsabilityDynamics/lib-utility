@@ -29,7 +29,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type {Object}
        */
-      public static $version = '0.3.1';
+      public static $version = '0.3.2';
 
       /**
        * Textdomain String
@@ -56,6 +56,85 @@ namespace UsabilityDynamics {
        * @author potanin@UD
        */
       public function __construct() {}
+
+      /**
+       * Looks for a json or a php file in specified directory, if the file is not found traverse up and look for it again until its found or until a document root is reached
+       *
+       *
+       * @todo Why not use pathinfo() to get extension. Will current solution work with something file ./filename.something.json? - potanin@UD
+       *
+       * @since 0.3.2
+       * @param string $name
+       * @param string $directory
+       * @param string $required
+       * @return json
+       * @author tosheen@UD
+       */
+      static public function findUp( $name = false, $dir = '', $required = false ) {
+
+        if( !$name ) {
+          return false;
+        }
+
+        if( is_array( $name ) || is_object( $name ) ) {
+
+          // Apply default settings to passed argument.
+          $_settings = self::defaults( $name, array(
+            "dir" => __DIR__,
+            "required" => false
+          ));
+
+          $name     = $_settings->name;
+          $dir      = $_settings->dir;
+          $required = $_settings->required;
+
+        }
+
+        // Determine if file is JSON
+        $fileData      = explode( '.', $name );
+        $fileExtension = $fileData[ count( $fileData ) - 1 ];
+
+        // Determine traverse path
+        $path = ( !empty( $dir ) ? $dir : $_SERVER[ 'DOCUMENT_ROOT' ] );
+
+        $file = $path . DIRECTORY_SEPARATOR . $name;
+
+        // Trigger Error and bail on failures.
+        if( !is_dir( $path ) ) {
+
+          if( $required ) {
+            trigger_error( __( 'Required file not found.' ), E_USER_ERROR);
+          }
+
+          return false;
+
+        }
+
+        if( file_exists( $file ) ) {
+          if( $fileExtension == 'json' ) {
+            return json_decode( file_get_contents( $file ) );
+          } else if( $fileExtension == 'xml' ) {
+            return simplexml_load_file( $file );
+          } else if( $fileExtension == 'php' ) {
+            return include_once $file;
+          }
+        } else {
+          if( $path != $_SERVER[ 'DOCUMENT_ROOT' ] ) {
+            $lastDirSeparator = strrpos( $path, DIRECTORY_SEPARATOR, -1 );
+            $path             = substr( $path, 0, $lastDirSeparator );
+
+            return self::findUp( $name, $path );
+          } else {
+
+            if( $required ) {
+              trigger_error( __( 'Required file not found.' ), E_USER_ERROR);
+            }
+
+            return false;
+          }
+        }
+
+      }
 
       /**
        * Set Dot-Notated Array Value
