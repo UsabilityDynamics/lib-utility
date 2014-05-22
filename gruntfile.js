@@ -7,19 +7,32 @@
  */
 module.exports = function buildLibrary( grunt ) {
 
+  // Require Utility Modules.
+  var joinPath  = require( 'path' ).join;
+  var findup    = require( 'findup-sync' );
+
+  // Determine Paths.
+  var _paths = {
+    composer: findup( 'composer.json' ),
+    vendor: findup( 'vendor' ),
+    phpTests: findup( 'test/php' ),
+    jsTests: findup( 'test/js' ),
+    autoload: findup( 'vendor/autoload.php' ) || findup( '**/autoload.php' )
+  };
+
   grunt.initConfig({
 
     // Read Composer File.
-    package: grunt.file.readJSON( 'composer.json' ),
+    package: grunt.file.readJSON( _paths.composer ),
 
     // PHP Unit Tests.
     phpunit: {
       classes: {
-        dir: 'test/php/*.php'
+        dir: joinPath( _paths.phpTests, '*.php' )
       },
       options: {
         bin: 'phpunit',
-        bootstrap: 'vendor/autoload.php',
+        bootstrap: _paths.autoload,
         colors: true
       }
     },
@@ -165,7 +178,7 @@ module.exports = function buildLibrary( grunt ) {
         reporter: 'list',
         requires: [ 'should' ]
       },
-      all: [ 'test/*.js' ]
+      all: [ joinPath( _paths.jsTests, '*.js' ) ]
     },
 
     // Usage Tests.
@@ -176,9 +189,7 @@ module.exports = function buildLibrary( grunt ) {
         ui: 'exports',
         bail: false
       },
-      all: [
-        'test/*.js'
-      ]
+      all: [ joinPath( _paths.jsTests, '*.js' ) ]
     }
 
   });

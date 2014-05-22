@@ -61,49 +61,59 @@ namespace UsabilityDynamics {
        * Looks for a json or a php file in specified directory, if the file is not found traverse up and look for it again until its found or until a document root is reached
        *
        *
-       * @todo Why not use pathinfo() to get extension. Will current solution work with something file ./filename.something.json? - potanin@UD
+       * @todo Honor the "nocase" option setting.
+       * @todo Perhaps wrap simplexml_load_file into  - potanin@UD
        *
        * @since 0.3.2
-       * @param string $name
-       * @param string $directory
-       * @param string $required
-       * @return json
+       * @method findUp
+       * @param string $name      - Name of file to find.
+       * @param string $cwd       - Directory to start seeking from. Defaults to __DIR__
+       * @param string $required  - If the file is required - if not found, will trigger an error.
        * @author tosheen@UD
+       * @return array|bool|mixed|\SimpleXMLElement
        */
-      static public function findUp( $name = false, $dir = '', $required = false ) {
+      static public function findUp( $name = false, $cwd = false, $required = false ) {
 
+        // No name provided, bail.
         if( !$name ) {
           return false;
         }
 
+        // If first argument appears to be an object/array, treat it as a configuration object.
         if( is_array( $name ) || is_object( $name ) ) {
 
           // Apply default settings to passed argument.
           $_settings = self::defaults( $name, array(
-            "dir" => __DIR__,
-            "required" => false
+            "cwd" => $cwd ? $cwd : null,
+            "required" => $required ? $required : false,
+            "nocase" => true
           ));
 
           $name     = $_settings->name;
-          $dir      = $_settings->dir;
+          $cwd      = $_settings->cwd;
           $required = $_settings->required;
+          $nocase   = $_settings->nocase;
 
         }
+
+        // No CWD set, backtrace to determine caller.
+        $cwd = $cwd ? $cwd : dirname( self::backtrace_caller()->file );
 
         // Determine if file is JSON
         $fileData      = explode( '.', $name );
         $fileExtension = $fileData[ count( $fileData ) - 1 ];
 
         // Determine traverse path
-        $path = ( !empty( $dir ) ? $dir : $_SERVER[ 'DOCUMENT_ROOT' ] );
+        $_path = ( !empty( $cwd ) ? $cwd : $_SERVER[ 'DOCUMENT_ROOT' ] );
 
-        $file = $path . DIRECTORY_SEPARATOR . $name;
+        $file = $_path . DIRECTORY_SEPARATOR . $name;
 
         // Trigger Error and bail on failures.
-        if( !is_dir( $path ) ) {
+        if( !is_dir( $_path ) ) {
 
+          // Trigger error if required, otherwise fail silently.
           if( $required ) {
-            trigger_error( __( 'Required file not found.' ), E_USER_ERROR);
+            trigger_error( __( 'Required file not found.', self::$text_domain ), E_USER_ERROR );
           }
 
           return false;
@@ -111,28 +121,54 @@ namespace UsabilityDynamics {
         }
 
         if( file_exists( $file ) ) {
-          if( $fileExtension == 'json' ) {
+
+          // Fetch and parse JSON.
+          if( $fileExtension === 'json' ) {
             return json_decode( file_get_contents( $file ) );
-          } else if( $fileExtension == 'xml' ) {
+          }
+
+          // Fetch and parse XML.
+          if( $fileExtension === 'xml' ) {
             return simplexml_load_file( $file );
-          } else if( $fileExtension == 'php' ) {
-            return include_once $file;
           }
-        } else {
-          if( $path != $_SERVER[ 'DOCUMENT_ROOT' ] ) {
-            $lastDirSeparator = strrpos( $path, DIRECTORY_SEPARATOR, -1 );
-            $path             = substr( $path, 0, $lastDirSeparator );
 
-            return self::findUp( $name, $path );
-          } else {
+          // Include all others.
+          return include_once( $file );
 
-            if( $required ) {
-              trigger_error( __( 'Required file not found.' ), E_USER_ERROR);
-            }
-
-            return false;
-          }
         }
+
+        if( $_path != $_SERVER[ 'DOCUMENT_ROOT' ] ) {
+          $lastDirSeparator   = strrpos( $_path, DIRECTORY_SEPARATOR, -1 );
+          $_path              = substr( $_path, 0, $lastDirSeparator );
+          return self::findUp( $name, $_path );
+        }
+
+        // Trigger error if file was required.
+        if( $required ) {
+          trigger_error( __( 'Required file not found.', self::$text_domain ), E_USER_ERROR );
+        }
+
+        // Couldn't find anything
+        return false;
+
+      }
+
+      /**
+       * Get Caller Object
+       *
+       * @method backtrace_caller
+       * @since 0.3.2
+       * @author potanin@UD
+       * @param int $depth
+       * @return object
+       */
+      static public function backtrace_caller( $depth = 1 ) {
+
+        // Always add one level to backtrace.
+        $_backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, ( $depth ? $depth : 1 ) + 1 );
+
+        // Return first hit as object, or a scaffolded object.
+        return $_backtrace[1] ? (object) $_backtrace[1] : (object) array( 'file' => null );
 
       }
 

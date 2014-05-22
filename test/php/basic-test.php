@@ -5,6 +5,10 @@
  */
 class BasicUtilityTest extends PHPUnit_Framework_TestCase {
 
+  /**
+   * Test Object Extending with Defaults
+   *
+   */
   public function testDefaults() {
 
     $myConfiguration = array(
@@ -22,12 +26,32 @@ class BasicUtilityTest extends PHPUnit_Framework_TestCase {
 
   }
 
+  /**
+   * Test Utility::findUp();
+   *
+   */
   public function testFindUp() {
 
     // Traverse upward directory tree until fixtures/sample.json is found.
-    // $sampleJSON = UsabilityDynamics\Utility::findUp( 'fixtures/sample.json', __DIR__ );
+    $sampleJSON = UsabilityDynamics\Utility::findUp( 'fixtures/sample.json' );
 
-    $this->assertEquals( 1.1,  $sampleJSON->anagrafica->{"@version"} );
+    // Traverse upward directory tree until fixtures/sample.xml is found.
+    $sampleXML  = UsabilityDynamics\Utility::findUp( 'fixtures/sample.xml' );
+
+    // Traverse upward directory tree until fixtures/sample.php is found.
+    UsabilityDynamics\Utility::findUp( 'fixtures/sample.php' );
+
+    // JSON Formatted properly.
+    $this->assertEquals( 1.1,   $sampleJSON->anagrafica->{"@version"} );
+
+    // XML Formatted properly.
+    $this->assertEquals( 1.1,   (string) $sampleXML->version );
+
+    // Custom class loaded.
+    $this->assertEquals( true,  class_exists( 'MySampleClass' ) );
+
+    // Custom class method is accessible.
+    $this->assertEquals( true,  method_exists( 'MySampleClass', 'test_method' ) );
 
   }
 
