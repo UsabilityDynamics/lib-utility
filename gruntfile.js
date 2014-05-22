@@ -2,7 +2,7 @@
  * Library Build.
  *
  * @author potanin@UD
- * @version 1.1.2
+ * @version 1.2.0
  * @param grunt
  */
 module.exports = function buildLibrary( grunt ) {

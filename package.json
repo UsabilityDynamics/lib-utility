@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/UsabilityDynamics/lib-utility"
   },
-  "main": "scripts/settings",
+  "main": "scripts/udx.utility.js",
   "engines": {
     "node": ">= 0.10.0"
   },
