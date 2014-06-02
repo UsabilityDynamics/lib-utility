@@ -2441,7 +2441,7 @@ namespace UsabilityDynamics {
         //** Replace l10n entries */
         foreach( $data as $k => $v ) {
           if ( is_array( $v ) ) {
-            $data[ $k ] = self::l10n_localize( $v );
+            $data[ $k ] = self::l10n_localize( $v, $l10n );
           } elseif ( is_string( $v ) ) {
             if ( strpos( $v, 'l10n' ) !== false ) {
               preg_match_all( '/l10n\.([^\s]*)/', $v, $matches );
