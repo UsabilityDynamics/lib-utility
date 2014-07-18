@@ -2066,7 +2066,7 @@ namespace UsabilityDynamics {
           }
 
           if ( !empty( $args[ 'trigger_action' ] ) && is_callable( 'WP_CRM_N', 'get_trigger_action_notification' ) ) {
-            $notifications = WP_CRM_N::get_trigger_action_notification( $args[ 'trigger_action' ] );
+            $notifications = \WP_CRM_N::get_trigger_action_notification( $args[ 'trigger_action' ] );
             if ( !empty( $notifications ) ) {
               return wp_crm_send_notification( $args[ 'trigger_action' ], $args[ 'data' ] );
             }
