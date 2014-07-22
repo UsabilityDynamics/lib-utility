@@ -5,7 +5,6 @@
  * @copyright Copyright (c) 2010 - 2013, Usability Dynamics, Inc.
  *
  * @author team@UD
- * @version 0.2.5
  * @namespace UsabilityDynamics
  * @module Utility
  */
@@ -23,13 +22,13 @@ namespace UsabilityDynamics {
     class Utility {
 
       /**
-       * Veneer core version.
+       * Class version.
        *
        * @static
        * @property $version
-       * @type {Object}
+       * @type string
        */
-      public static $version = '0.3.2';
+      public static $version = '0.3.3';
 
       /**
        * Textdomain String
