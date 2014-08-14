@@ -28,7 +28,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type string
        */
-      public static $version = '0.3.3';
+      public static $version = '0.3.4';
 
       /**
        * Textdomain String
@@ -228,21 +228,20 @@ namespace UsabilityDynamics {
       /**
        * Parses Query.
        * HACK. The current logic solves the issue of max_input_vars in the case if query is huge.
-       * For example, user can set more than 150 property attributes (WP-Property) where every attribute has own set of params.
-       *
+       * 
        * @see parse_str() Default PHP function
-       * @version 1.0
+       * @param mixed $request
+       * @version 1.1
        * @author peshkov@UD
        */
-      static public function parse_str( $request, $data = array() ) {
-        $hash = md5( '%2B' );
-        $request = str_replace( '%2B', $hash, $request );
-        $request = urldecode( $request );
-        $request = str_replace( $hash, '%2B', $request );
+      static public function parse_str( $request ) {
+        $data = array();
         $tokens = explode( "&", $request );
         foreach ( $tokens as $token ) {
+          $token = str_replace( '%2B', md5( '%2B' ), $token );
           $arr = array();
           parse_str( $token, $arr );
+          array_walk_recursive( $arr, create_function( '&$value,$key', '$value = str_replace( md5( "%2B" ), "+", $value );' ) );
           $data = self::extend( $data, $arr );
         }
         return $data;
