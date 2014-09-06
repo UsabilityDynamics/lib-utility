@@ -57,6 +57,78 @@ namespace UsabilityDynamics {
       public function __construct() {}
 
       /**
+       *
+       * call_user_func( 'UsabilityDynamics\Utility::optimizeDatabase', 'flush-duplicate-meta' );
+       *
+       * UsabilityDynamics\Utility::optimizeDatabase( 'flush-duplicate-meta' );
+       *
+       * @param $action
+       */
+      static public function optimizeDatabase( $action ) {
+        global $wpdb;
+        //die('optimizeDatabase');
+
+        switch( $action ) {
+
+          case 'flush-duplicate-meta':
+
+            $allposts = get_posts(array(
+              "numberposts" => 10,
+              "offset" => 10,
+              "post_type" => 'any',
+              "post_status" => 'any'
+            ));
+
+            foreach ( $allposts as $_post ) {
+
+              $postmeta = get_post_meta($postinfo->ID, $key);
+
+              die( '<pre>' . print_r( $postmeta, true ) . '</pre>');
+
+            }
+
+            $keys = array('address', 'address2', 'city', 'state', 'zip'); //Add post meta keys here
+
+            foreach ( $keys as $key ) {
+
+              foreach( $allposts as $postinfo) {
+
+                // Fetch array of custom field values
+
+
+                //print_r($postinfo);
+
+                if (!empty($postmeta) ) {
+
+                  // Delete the custom field for this post (all occurrences)
+                  delete_post_meta($postinfo->ID, $key);
+
+                  // Insert one and only one custom field
+                  update_post_meta($postinfo->ID, $key, $postmeta[0]);
+
+                }
+              }
+
+            }
+
+
+            break;
+
+          default:
+
+          break;
+
+        }
+
+        //$wpdb->query( "DELETE a,b,c FROM {$wpdb->posts} a LEFT JOIN wp_term_relationships b ON (a.ID = b.object_id) LEFT JOIN {$wpdb->postmeta} c ON (a.ID = c.post_id) WHERE a.post_type = 'revision'" );
+        //$wpdb->query( "DELETE pm FROM wp_postmeta pm LEFT JOIN wp_posts wp ON wp.ID = pm.post_id WHERE wp.ID IS NULL;" );
+        //$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE ('_site_transient_%');" );
+        //$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE ('_transient_%');" );
+
+
+      }
+
+      /**
        * Looks for a json or a php file in specified directory, if the file is not found traverse up and look for it again until its found or until a document root is reached
        *
        *
