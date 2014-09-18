@@ -28,7 +28,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type string
        */
-      public static $version = '0.3.5';
+      public static $version = '0.3.6';
 
       /**
        * Textdomain String
@@ -2538,6 +2538,41 @@ namespace UsabilityDynamics {
         // convmap since 0x80 char codes so it takes all multibyte codes (above ASCII 127). So such characters are being "hidden" from normal json_encoding
         array_walk_recursive( $arr, create_function( '&$item, $key', 'if (is_string($item)) $item = mb_encode_numericentity($item, array (0x80, 0xffff, 0, 0xffff), "UTF-8");' ) );
         return mb_decode_numericentity( json_encode( $arr ), array( 0x80, 0xffff, 0, 0xffff ), 'UTF-8' );
+      }
+      
+      /**
+       * Merges any number of arrays / parameters recursively,
+       *
+       * Replacing entries with string keys with values from latter arrays.
+       * If the entry or the next value to be assigned is an array, then it
+       * automagically treats both arguments as an array.
+       * Numeric entries are appended, not replaced, but only if they are
+       * unique
+       *
+       * @source http://us3.php.net/array_merge_recursive
+       * @version 0.4
+       */
+      static public function array_merge_recursive_distinct() {
+        $arrays = func_get_args();
+        $base = array_shift( $arrays );
+        if ( !is_array( $base ) ) $base = empty( $base ) ? array() : array( $base );
+        foreach ( (array)$arrays as $append ) {
+          if ( !is_array( $append ) ) $append = empty( $append ) ? array() : array( $append );
+          foreach ( (array)$append as $key => $value ) {
+            if ( !array_key_exists( $key, $base ) and !is_numeric( $key ) ) {
+              $base[ $key ] = $append[ $key ];
+              continue;
+            }
+            if ( @is_array( $value ) && isset( $base[ $key ] ) && isset( $append[ $key ] ) && is_array( $base[ $key ] ) && is_array( $append[ $key ] ) ) {
+              $base[ $key ] = self::array_merge_recursive_distinct( $base[ $key ], $append[ $key ] );
+            } else if ( is_numeric( $key ) ) {
+              if ( !in_array( $value, $base ) ) $base[ ] = $value;
+            } else {
+              $base[ $key ] = $value;
+            }
+          }
+        }
+        return $base;
       }
 
     }
