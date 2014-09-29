@@ -40,13 +40,6 @@ namespace UsabilityDynamics {
       public static $text_domain = 'lib-utility';
 
       /**
-       * Default salt for encryption
-       *
-       * @property default_salt
-       */
-      const default_salt = AUTH_SALT;
-
-      /**
        * Constructor for initializing class, in static mode as well as dynamic.
        *
        * @todo Should make the transdomain configuraiton.
@@ -2311,7 +2304,7 @@ namespace UsabilityDynamics {
        */
       static public function encrypt( $pt, $salt = false ) {
 
-        if( !$salt ) $salt = self::default_salt;
+        if( !$salt ) $salt = AUTH_SALT;
         $encrypted = base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_256, md5( $salt ), $pt, MCRYPT_MODE_CBC, md5( md5( $salt ) ) ) );
         $encrypted = str_replace( array( '+', '/', '=' ), array( '-', '_', '' ), $encrypted );
 
@@ -2333,7 +2326,7 @@ namespace UsabilityDynamics {
        */
       static public function decrypt( $ct, $salt = false ) {
 
-        if( !$salt ) $salt = self::default_salt;
+        if( !$salt ) $salt = AUTH_SALT;
         $data = str_replace( array( '-', '_' ), array( '+', '/' ), $ct );
         $mod4 = strlen( $data ) % 4;
         if( $mod4 ) {
