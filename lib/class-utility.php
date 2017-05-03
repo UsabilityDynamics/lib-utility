@@ -1894,7 +1894,14 @@ namespace UsabilityDynamics {
               continue;
             }
             if( ( isset( $value ) && @is_array( $value ) ) || ( isset( $base[ $key ] ) && @is_array( $base[ $key ] ) ) ) {
-              $base[ $key ] = self::extend( $base[ $key ], $append[ $key ] );
+              
+              // extend if exists, otherwise create.
+              if( isset( $base[ $key ] ) ) {
+                $base[ $key ] = self::extend( $base[ $key ], $append[ $key ] );
+              } else {
+                $base[ $key ] = $append[ $key ];
+              }            
+              
             } else if( is_numeric( $key ) ) {
               if( !in_array( $value, $base ) ) $base[ ] = $value;
             } else {
