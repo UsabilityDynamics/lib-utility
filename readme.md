@@ -2,7 +2,7 @@
 
  - Utility: General utility methods.
  - Job: Job and processing handling.
- - Loader: PSR class loader.
+ - Loader: PSR class loader. 
 
 ## Utility Methods
 
