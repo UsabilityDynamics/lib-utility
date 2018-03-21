@@ -32,6 +32,7 @@ $composer = UsabilityDynamics\Utility::findUp( 'composer.json', __DIR__ );
 echo "Versio is {$composer->version}."
 ```
 
+
 ## License
 
 (The MIT License)
