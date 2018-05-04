@@ -293,11 +293,12 @@ namespace UsabilityDynamics {
       /**
        * Parses Query.
        * HACK. The current logic solves the issue of max_input_vars in the case if query is huge.
-       * 
+       *
        * @see parse_str() Default PHP function
-       * @param mixed $request
        * @version 1.1
        * @author peshkov@UD
+       * @param $request
+       * @return array|mixed
        */
       static public function parse_str( $request ) {
         $data = array();
@@ -306,7 +307,9 @@ namespace UsabilityDynamics {
           $token = str_replace( '%2B', md5( '%2B' ), $token );
           $arr = array();
           parse_str( $token, $arr );
-          array_walk_recursive( $arr, create_function( '&$value,$key', '$value = str_replace( md5( "%2B" ), "+", $value );' ) );
+          array_walk_recursive( $arr, function( &$value,$key ) {
+            $value = str_replace( md5( "%2B" ), "+", $value );
+          });
           $data = self::extend( $data, $arr );
         }
         return $data;
@@ -1882,7 +1885,6 @@ namespace UsabilityDynamics {
        */
       static public function extend() {
 
-        //$arrays = array_reverse( func_get_args() );
         $arrays = func_get_args();
         $base   = array_shift( $arrays );
         if( !is_array( $base ) ) $base = empty( $base ) ? array() : array( $base );
@@ -2016,7 +2018,9 @@ namespace UsabilityDynamics {
 
           return false;
         }
-        add_action( 'admin_menu', create_function( '', "add_menu_page( __( 'Log' ,UD_API_Transdomain ), __( 'Log',UD_API_Transdomain ), current_user_can( 'manage_options' ), 'ud_log', array( 'UD_API', 'show_log_page' ) );" ) );
+        add_action( 'admin_menu', function() {
+          add_menu_page( __( 'Log', UD_API_Transdomain ), __( 'Log', UD_API_Transdomain ), current_user_can( 'manage_options' ), 'ud_log', array( 'UD_API', 'show_log_page' ) );
+        });
       }
 
       /**
@@ -2514,7 +2518,7 @@ namespace UsabilityDynamics {
               preg_match_all( '/l10n\.([^\s]*)/', $v, $matches );
               if ( !empty( $matches[ 1 ] ) ) {
                 foreach ( $matches[ 1 ] as $i => $m ) {
-                  if ( key_exists( $m, $l10n ) ) {
+                  if ( array_key_exists( $m, $l10n ) ) {
                     $data[ $k ] = str_replace( $matches[ 0 ][ $i ], $l10n[ $m ], $data[ $k ] );
                   }
                 }
