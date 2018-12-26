@@ -2089,7 +2089,9 @@ namespace UsabilityDynamics {
       static public function replace_data( $str = '', $values = array(), $brackets = array( 'left' => '[', 'right' => ']' ) ) {
         $values       = (array) $values;
         $replacements = array_keys( $values );
-        array_walk( $replacements, create_function( '&$val', '$val = "' . $brackets[ 'left' ] . '".$val."' . $brackets[ 'right' ] . '";' ) );
+        array_walk( $replacements, function(&$val) use ($brackets){
+          $val = $brackets[ 'left' ] . $val . $brackets[ 'right' ];
+        } );
 
         return str_replace( $replacements, array_values( $values ), $str );
       }
@@ -2394,7 +2396,9 @@ namespace UsabilityDynamics {
        * @author odokienko@UD
        */
       static public function cleanup_extra_whitespace( $content ) {
-        $content = preg_replace_callback( '~<(?:table|ul|ol )[^>]*>.*?<\/( ?:table|ul|ol )>~ims', create_function( '$matches', 'return preg_replace(\'~>[\s]+<((?:t[rdh]|li|\/tr|/table|/ul ))~ims\',\'><$1\',$matches[0]);' ), $content );
+        $content = preg_replace_callback( '~<(?:table|ul|ol )[^>]*>.*?<\/( ?:table|ul|ol )>~ims', function($matches){
+          return preg_replace('~>[\s]+<((?:t[rdh]|li|\/tr|/table|/ul ))~ims', '><$1', $matches[0]);
+        }, $content );
 
         return $content;
       }
@@ -2488,7 +2492,9 @@ namespace UsabilityDynamics {
        *
        * Usage:
        *
-       * add_filter( 'ud::schema::localization', create_function( '$locals', 'return array_merge( array( 'value_for_translating' => __( 'Blah Blah' ) ), $locals )') );
+       * add_filter( 'ud::schema::localization', function($locals){
+       *    return array_merge( array( 'value_for_translating' => __( 'Blah Blah' ) ), $locals );
+       * });
        *
        * $result = self::l10n_localize (array(
        *  'key' => 'l10n.value_for_translating'
@@ -2540,7 +2546,10 @@ namespace UsabilityDynamics {
        */
       static public function json_encode( $arr ) {
         // convmap since 0x80 char codes so it takes all multibyte codes (above ASCII 127). So such characters are being "hidden" from normal json_encoding
-        array_walk_recursive( $arr, create_function( '&$item, $key', 'if (is_string($item)) $item = mb_encode_numericentity($item, array (0x80, 0xffff, 0, 0xffff), "UTF-8");' ) );
+        array_walk_recursive( $arr,  function(&$item, $key){
+          if (is_string($item)) 
+            $item = mb_encode_numericentity($item, array (0x80, 0xffff, 0, 0xffff), "UTF-8");
+        });
         return mb_decode_numericentity( json_encode( $arr ), array( 0x80, 0xffff, 0, 0xffff ), 'UTF-8' );
       }
       
