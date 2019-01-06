@@ -28,7 +28,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type string
        */
-      public static $version = '0.3.8';
+      public static $version = '0.4.0';
 
       /**
        * Textdomain String
